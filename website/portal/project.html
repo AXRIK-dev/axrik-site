@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project — AXRIK Portal</title>
+  <link rel="stylesheet" href="portal.css">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0a0a0a">
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<div class="portal-layout">
+
+  <!-- ── Sidebar ──────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="../index.html"><img src="../assets/axrik-logo-transparent.png" alt="AXRIK"></a>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="sidebar-section-label">My Project</span>
+      <a href="dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="#" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Project details
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar">?</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebarName">Loading…</div>
+          <div class="sidebar-user-role">Client</div>
+        </div>
+        <button class="sidebar-signout" onclick="signOut()" title="Sign out">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ─────────────────────────────────────────────── -->
+  <main class="portal-main">
+    <div class="portal-header">
+      <div>
+        <h1 id="projectName">Loading…</h1>
+        <p id="projectDesc" style="color:var(--text-2);font-size:14px;margin-top:4px"></p>
+      </div>
+      <div id="stageBadge"></div>
+    </div>
+
+    <!-- Stage progress -->
+    <div class="card" id="stageCard" style="margin-bottom:24px">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+
+    <!-- Tab nav -->
+    <div id="tabNav" style="display:flex;gap:4px;margin-bottom:24px;background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:4px;width:fit-content">
+      <button class="tab-btn active" data-tab="files" onclick="switchTab('files')">Files</button>
+      <button class="tab-btn" data-tab="approvals" onclick="switchTab('approvals')">Approvals <span id="approvalBadge" class="kanban-unread" style="display:none"></span></button>
+      <button class="tab-btn" data-tab="updates" onclick="switchTab('updates')">Updates</button>
+      <button class="tab-btn" data-tab="messages" onclick="switchTab('messages')">Messages <span id="msgBadge" class="kanban-unread" style="display:none"></span></button>
+      <button class="tab-btn" data-tab="invoices" onclick="switchTab('invoices')">Invoices <span id="invoiceBadge" class="kanban-unread" style="display:none;background:var(--amber);color:#000"></span></button>
+      <button class="tab-btn" id="supportTab" data-tab="support" onclick="switchTab('support')" style="display:none">Support</button>
+    </div>
+
+    <!-- Tab content -->
+    <div id="tab-files">
+      <div class="card-grid card-grid--2" style="gap:24px">
+        <!-- Upload + requests -->
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <!-- Document requests checklist -->
+          <div class="card" id="requestsCard" style="display:none" id="requests">
+            <div class="card-title" style="color:var(--green)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              Files we need from you
+            </div>
+            <div id="requestsList"></div>
+          </div>
+
+          <!-- File upload -->
+          <div class="card" id="upload">
+            <div class="card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Upload files
+            </div>
+            <p style="font-size:13px;color:var(--text-2);margin-bottom:16px">Logos, photos, spreadsheets, menus — anything we need to build your site.</p>
+            <div class="upload-zone" id="uploadZone">
+              <input type="file" id="fileInput" multiple accept="image/*,.pdf,.xlsx,.xls,.csv,.docx,.doc,.zip,.txt">
+              <div class="upload-zone-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+              <p><strong>Click to browse</strong> or drag & drop</p>
+              <span>Images, PDFs, spreadsheets — up to 50 MB each</span>
+            </div>
+            <div id="uploadProgress" style="margin-top:12px;display:none">
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2)"><div class="spinner"></div><span id="uploadProgressText">Uploading…</span></div>
+            </div>
+            <div id="labelModal" style="display:none;margin-top:12px">
+              <div class="form-group" style="margin-bottom:8px">
+                <label class="form-label">Label this file <span style="color:var(--text-3);text-transform:none;font-weight:400">(optional)</span></label>
+                <input class="form-input" id="fileLabel" placeholder="e.g. Logo, Menu, Hero image">
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn--primary btn--sm" id="confirmUploadBtn">Upload</button>
+                <button class="btn btn--ghost btn--sm" id="cancelUploadBtn">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Uploaded files -->
+        <div class="card">
+          <div class="card-title" style="justify-content:space-between">
+            <span style="display:flex;align-items:center;gap:8px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              Uploaded files
+            </span>
+            <span id="docCount" style="font-size:11px;color:var(--text-3)"></span>
+          </div>
+          <div id="docList" class="doc-list"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Approvals tab -->
+    <div id="tab-approvals" style="display:none" id="approvals">
+      <div id="approvalsList"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+
+    <!-- Updates tab -->
+    <div id="tab-updates" style="display:none">
+      <div class="card">
+        <div class="card-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          Build updates from AXRIK
+        </div>
+        <!-- Stage rating prompt -->
+        <div id="ratingPrompt" style="display:none;margin-bottom:16px;padding:16px;background:var(--green-dim);border:1px solid rgba(37,163,112,0.2);border-radius:10px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:8px">How did the <span id="ratingStageLabel"></span> stage go?</div>
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            ${[1,2,3,4,5].map(n => `<button onclick="submitRating(${n})" style="font-size:22px;background:none;border:1px solid var(--border-2);border-radius:8px;padding:6px 10px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.background='var(--bg-3)'" onmouseout="this.style.background='none'">${['😞','😐','🙂','😊','🤩'][n-1]}</button>`).join('')}
+          </div>
+          <input class="form-input" id="ratingComment" placeholder="Optional: anything we could have done better?" style="font-size:12px">
+        </div>
+        <div id="updateFeed" class="update-feed"><div class="loading"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+
+    <!-- Messages tab -->
+    <div id="tab-messages" style="display:none" id="comments">
+      <div class="card">
+        <div class="card-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Messages
+        </div>
+        <div id="commentThread" class="comment-thread" style="max-height:440px;overflow-y:auto;padding-right:4px"><div class="loading"><div class="spinner"></div></div></div>
+        <div class="comment-input-row" style="margin-top:14px">
+          <input class="form-input" id="commentInput" placeholder="Ask a question or leave a note…" maxlength="500">
+          <button class="btn btn--primary" id="sendCommentBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invoices tab -->
+    <div id="tab-invoices" style="display:none" id="invoices">
+      <div id="invoiceList"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+
+    <!-- Support tab (post-live) -->
+    <div id="tab-support" style="display:none" id="support">
+      <div class="card-grid card-grid--2" style="gap:24px">
+        <!-- Submit request -->
+        <div class="card">
+          <div class="card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Request a change
+          </div>
+          <p style="font-size:13px;color:var(--text-2);margin-bottom:16px">Need something tweaked? Submit a request and we'll get it sorted.</p>
+          <div class="form-group">
+            <label class="form-label">What needs changing?</label>
+            <input class="form-input" id="srTitle" placeholder="e.g. Update the contact email address">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Details</label>
+            <textarea class="form-textarea" id="srDesc" placeholder="Describe what you'd like changed and where on the site it is…"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select class="form-select" id="srPriority">
+              <option value="normal">Normal</option>
+              <option value="high">Urgent</option>
+              <option value="low">Low priority</option>
+            </select>
+          </div>
+          <button class="btn btn--primary" onclick="submitSupportRequest()">Submit request</button>
+        </div>
+        <!-- Existing requests -->
+        <div class="card">
+          <div class="card-title">Your requests</div>
+          <div id="supportList"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Approval response modal -->
+<div class="modal-overlay" id="approvalModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="am_title">Review</h2>
+      <button class="modal-close" onclick="closeModal('approvalModal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="am_content"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="supabase.js"></script>
+<script src="auth.js"></script>
+<script>
+let currentUser, userProfile, project;
+let pendingFile = null;
+let currentApproval = null;
+let previousStage = null;
+
+const projectId = new URLSearchParams(window.location.search).get('id');
+
+// ── Tab CSS ───────────────────────────────────────────────────
+document.head.insertAdjacentHTML('beforeend', `<style>
+.tab-btn {
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-3);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.tab-btn:hover { background: var(--bg-3); color: var(--text); }
+.tab-btn.active { background: var(--bg-3); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+</style>`);
+
+async function init() {
+  currentUser = await requireAuth();
+  if (!currentUser) return;
+
+  const role = await getUserRole();
+  if (role === 'admin') { window.location.href = 'admin.html'; return; }
+
+  try {
+    userProfile = await getUserProfile(currentUser.id);
+    const name = userProfile?.full_name || currentUser.email.split('@')[0];
+    document.getElementById('sidebarName').textContent = name;
+    document.getElementById('sidebarAvatar').textContent = name.charAt(0).toUpperCase();
+  } catch {}
+
+  if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
+
+  await loadProject();
+
+  // Handle hash navigation
+  const hash = window.location.hash.replace('#', '');
+  const tabMap = { upload: 'files', requests: 'files', approvals: 'approvals', updates: 'updates', comments: 'messages', invoices: 'invoices', support: 'support' };
+  if (tabMap[hash]) switchTab(tabMap[hash]);
+  else if (hash) setTimeout(() => document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' }), 300);
+}
+
+async function loadProject() {
+  let q = db.from('projects').select('*').eq('client_id', currentUser.id);
+  if (projectId) q = q.eq('id', projectId);
+  const { data } = await q.order('created_at', { ascending: false }).limit(1).single();
+  if (!data) { document.getElementById('projectName').textContent = 'Project not found'; return; }
+
+  project = data;
+  document.getElementById('projectName').textContent = project.name;
+  document.getElementById('projectDesc').textContent = project.description || '';
+  document.getElementById('stageBadge').innerHTML = `<span class="badge badge--${project.stage}">${getStageLabel(project.stage)}</span>`;
+
+  // Show support tab if live
+  if (project.stage === 'live') {
+    document.getElementById('supportTab').style.display = 'flex';
+  }
+
+  renderStage();
+  await loadAllData();
+}
+
+function renderStage() {
+  const stageIdx = getStageIndex(project.stage);
+  const stageInfo = STAGES.find(s => s.key === project.stage);
+  const stageSteps = STAGES.map((s, i) => {
+    const cls = i < stageIdx ? 'completed' : i === stageIdx ? 'current' : '';
+    const icon = i < stageIdx ? `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>` : (i + 1).toString();
+    return `<div class="stage-step ${cls}"><div class="stage-dot">${icon}</div><div class="stage-label">${s.label}</div></div>`;
+  }).join('');
+
+  document.getElementById('stageCard').innerHTML = `
+    <div class="card-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Build progress</div>
+    <div class="stage-bar-track">${stageSteps}</div>
+    ${stageInfo ? `<div class="stage-desc"><strong>${stageInfo.label}:</strong> ${stageInfo.desc}</div>` : ''}
+    ${project.preview_url ? `<a href="${escHtml(project.preview_url)}" target="_blank" rel="noopener" class="btn btn--outline btn--sm" style="margin-top:12px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Preview site ↗</a>` : ''}`;
+}
+
+async function loadAllData() {
+  await Promise.all([
+    loadDocRequests(), loadDocuments(), loadApprovals(),
+    loadUpdates(), loadComments(), loadInvoices(), loadSupportRequests()
+  ]);
+  updateBadges();
+}
+
+// ── Tabs ──────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('[id^="tab-"]').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`tab-${name}`).style.display = 'block';
+  document.querySelector(`[data-tab="${name}"]`)?.classList.add('active');
+}
+
+async function updateBadges() {
+  const { count: msgCount } = await db.from('comments').select('*', { count: 'exact', head: true })
+    .eq('project_id', project.id).eq('is_read', false).neq('user_id', currentUser.id);
+  const { count: approvalCount } = await db.from('approvals').select('*', { count: 'exact', head: true })
+    .eq('project_id', project.id).eq('status', 'pending');
+  const { data: invoices } = await db.from('invoices').select('status').eq('project_id', project.id).in('status', ['unpaid','overdue']);
+
+  const msgBadge = document.getElementById('msgBadge');
+  const approvalBadge = document.getElementById('approvalBadge');
+  const invoiceBadge = document.getElementById('invoiceBadge');
+
+  if (msgCount > 0) { msgBadge.textContent = msgCount; msgBadge.style.display = 'inline-flex'; }
+  if (approvalCount > 0) { approvalBadge.textContent = approvalCount; approvalBadge.style.display = 'inline-flex'; }
+  if (invoices?.length > 0) { invoiceBadge.textContent = invoices.length; invoiceBadge.style.display = 'inline-flex'; }
+}
+
+// ── Document requests ─────────────────────────────────────────
+async function loadDocRequests() {
+  const { data } = await db.from('document_requests').select('*')
+    .eq('project_id', project.id).order('created_at', { ascending: true });
+
+  if (!data?.length) return;
+
+  document.getElementById('requestsCard').style.display = 'block';
+  const pending = data.filter(r => !r.is_completed);
+  const done    = data.filter(r => r.is_completed);
+
+  document.getElementById('requestsList').innerHTML = `
+    ${pending.length ? `<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:${done.length ? '12px' : '0'}">
+      ${pending.map(r => `
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--bg-3);border:1px solid var(--border);border-radius:8px">
+          <div style="width:18px;height:18px;border:2px solid var(--border-2);border-radius:4px;flex-shrink:0;margin-top:1px;cursor:pointer" onclick="markRequestComplete('${r.id}')" title="Mark done"></div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:500">${escHtml(r.label)}</div>
+            ${r.description ? `<div style="font-size:11px;color:var(--text-3);margin-top:2px">${escHtml(r.description)}</div>` : ''}
+          </div>
+          <button class="btn btn--primary btn--sm" onclick="triggerUploadForRequest('${r.id}','${escHtml(r.label)}')">Upload</button>
+        </div>`).join('')}
+    </div>` : ''}
+    ${done.length ? `<div style="font-size:11px;color:var(--text-3);margin-bottom:6px;margin-top:4px">Completed (${done.length})</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      ${done.map(r => `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;opacity:0.6">
+          <div style="width:18px;height:18px;background:var(--green-dim);border:2px solid var(--green);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div style="font-size:12px;text-decoration:line-through;color:var(--text-3)">${escHtml(r.label)}</div>
+        </div>`).join('')}
+    </div>` : ''}`;
+}
+
+let uploadForRequestId = null;
+let uploadForRequestLabel = null;
+
+function triggerUploadForRequest(id, label) {
+  uploadForRequestId = id;
+  uploadForRequestLabel = label;
+  document.getElementById('fileLabel').value = label;
+  document.getElementById('fileInput').click();
+}
+
+async function markRequestComplete(id) {
+  await db.from('document_requests').update({ is_completed: true, completed_at: new Date().toISOString() }).eq('id', id);
+  showToast('Marked as done', 'success');
+  await loadDocRequests();
+}
+
+// ── Documents ─────────────────────────────────────────────────
+async function loadDocuments() {
+  const { data } = await db.from('documents').select('*').eq('project_id', project.id).order('created_at', { ascending: false });
+  const list = document.getElementById('docList');
+  document.getElementById('docCount').textContent = data?.length ? `${data.length} file${data.length !== 1 ? 's' : ''}` : '';
+
+  if (!data?.length) { list.innerHTML = `<div class="empty-state">No files uploaded yet.</div>`; return; }
+
+  list.innerHTML = data.map(doc => `
+    <div class="doc-item">
+      <div class="doc-icon">${fileEmoji(doc.file_type)}</div>
+      <div class="doc-info">
+        <div class="doc-name">${escHtml(doc.file_name)}</div>
+        <div class="doc-meta">${doc.label ? escHtml(doc.label) + ' · ' : ''}${formatFileSize(doc.file_size)} · ${formatDate(doc.created_at)}</div>
+      </div>
+      <div class="doc-actions">
+        <button class="btn btn--ghost btn--sm" onclick="downloadDoc('${doc.file_path}','${escHtml(doc.file_name)}')" title="Download">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <button class="btn btn--ghost btn--sm" onclick="deleteDoc('${doc.id}','${doc.file_path}')" title="Delete">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+// Upload flow
+const fileInput = document.getElementById('fileInput');
+const uploadZone = document.getElementById('uploadZone');
+
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('dragover'); if (e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFileSelect(fileInput.files[0]); fileInput.value = ''; });
+
+function handleFileSelect(file) {
+  pendingFile = file;
+  if (!uploadForRequestId) {
+    document.getElementById('labelModal').style.display = 'block';
+    document.getElementById('fileLabel').value = '';
+    document.getElementById('fileLabel').focus();
+  } else {
+    doUpload();
+  }
+}
+
+document.getElementById('cancelUploadBtn').addEventListener('click', () => {
+  pendingFile = null; uploadForRequestId = null; uploadForRequestLabel = null;
+  document.getElementById('labelModal').style.display = 'none';
+});
+document.getElementById('confirmUploadBtn').addEventListener('click', doUpload);
+document.getElementById('fileLabel').addEventListener('keydown', e => { if (e.key === 'Enter') doUpload(); });
+
+async function doUpload() {
+  if (!pendingFile) return;
+  const file  = pendingFile;
+  const label = uploadForRequestLabel || document.getElementById('fileLabel').value.trim();
+  const reqId = uploadForRequestId;
+
+  document.getElementById('labelModal').style.display = 'none';
+  document.getElementById('uploadProgress').style.display = 'block';
+  document.getElementById('uploadProgressText').textContent = `Uploading ${file.name}…`;
+  pendingFile = null; uploadForRequestId = null; uploadForRequestLabel = null;
+
+  const filePath = `${project.id}/${currentUser.id}/${Date.now()}_${file.name}`;
+  try {
+    const { error: storageErr } = await db.storage.from('portal-documents').upload(filePath, file, { cacheControl: '3600', upsert: false });
+    if (storageErr) throw storageErr;
+
+    const { data: doc } = await db.from('documents').insert({
+      project_id: project.id, uploaded_by: currentUser.id,
+      file_name: file.name, file_path: filePath, file_type: file.type, file_size: file.size, label: label || null,
+    }).select().single();
+
+    // Mark request complete if this upload was for a request
+    if (reqId && doc) {
+      await db.from('document_requests').update({ is_completed: true, document_id: doc.id, completed_at: new Date().toISOString() }).eq('id', reqId);
+    }
+
+    showToast(`${file.name} uploaded`, 'success');
+    await Promise.all([loadDocuments(), loadDocRequests()]);
+  } catch (err) {
+    showToast(err.message || 'Upload failed', 'error');
+  } finally {
+    document.getElementById('uploadProgress').style.display = 'none';
+  }
+}
+
+async function downloadDoc(path, name) {
+  const { data } = await db.storage.from('portal-documents').createSignedUrl(path, 60);
+  if (data) { const a = document.createElement('a'); a.href = data.signedUrl; a.download = name; a.click(); }
+}
+
+async function deleteDoc(id, path) {
+  if (!confirm('Delete this file?')) return;
+  await db.storage.from('portal-documents').remove([path]);
+  await db.from('documents').delete().eq('id', id);
+  showToast('File deleted', 'success');
+  await loadDocuments();
+}
+
+// ── Approvals ─────────────────────────────────────────────────
+async function loadApprovals() {
+  const { data } = await db.from('approvals').select('*').eq('project_id', project.id).order('created_at', { ascending: false });
+  const container = document.getElementById('approvalsList');
+
+  if (!data?.length) {
+    container.innerHTML = `<div class="empty-state">No items to approve yet. We'll post designs and pages here when they're ready for your sign-off.</div>`;
+    return;
+  }
+
+  container.innerHTML = data.map(a => {
+    const statusIcon = a.status === 'approved' ? '✅' : a.status === 'changes_requested' ? '🔄' : '⏳';
+    const statusText = a.status === 'approved' ? 'Approved' : a.status === 'changes_requested' ? 'Changes requested' : 'Awaiting your review';
+    const statusColor = a.status === 'approved' ? 'var(--green)' : a.status === 'changes_requested' ? 'var(--amber)' : 'var(--text-2)';
+
+    return `
+      <div class="card" style="margin-bottom:16px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:15px;font-family:'Syne',sans-serif;margin-bottom:4px">${escHtml(a.title)}</div>
+            ${a.description ? `<p style="font-size:13px;color:var(--text-2);margin-bottom:10px">${escHtml(a.description)}</p>` : ''}
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:${statusColor}">
+              <span>${statusIcon}</span><span>${statusText}</span>
+              ${a.responded_at ? `<span style="color:var(--text-3)">· ${formatDate(a.responded_at)}</span>` : ''}
+            </div>
+            ${a.client_notes && a.status === 'changes_requested' ? `<div style="margin-top:8px;padding:8px 12px;background:var(--amber-dim);border:1px solid rgba(224,168,82,0.2);border-radius:6px;font-size:12px;color:var(--text)">Your notes: ${escHtml(a.client_notes)}</div>` : ''}
+          </div>
+          <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap">
+            ${a.preview_url ? `<a href="${escHtml(a.preview_url)}" target="_blank" rel="noopener" class="btn btn--outline btn--sm">View ↗</a>` : ''}
+            ${a.status === 'pending' ? `<button class="btn btn--primary btn--sm" onclick="openApprovalModal('${a.id}')">Respond</button>` : ''}
+          </div>
+        </div>
+        ${a.screenshot_url ? `<img src="${escHtml(a.screenshot_url)}" alt="${escHtml(a.title)}" style="margin-top:14px;border-radius:8px;max-width:100%;border:1px solid var(--border)">` : ''}
+      </div>`;
+  }).join('');
+}
+
+function openApprovalModal(approvalId) {
+  currentApproval = approvalId;
+  const approvals_data = document.getElementById('approvalsList').__approvals;
+  const a = document.getElementById('approvalsList').querySelector(`[data-id="${approvalId}"]`);
+
+  document.getElementById('am_title').textContent = 'Your response';
+  document.getElementById('am_content').innerHTML = `
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:20px">Are you happy with this, or do you need changes?</p>
+    <div class="form-group">
+      <label class="form-label">Notes <span style="color:var(--text-3);font-weight:400;text-transform:none">(optional — required if requesting changes)</span></label>
+      <textarea class="form-textarea" id="am_notes" placeholder="Leave any feedback or notes for us…" style="min-height:80px"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn--primary" style="flex:1;justify-content:center" onclick="respondApproval('approved')">
+        ✅ Approve
+      </button>
+      <button class="btn btn--outline" style="flex:1;justify-content:center" onclick="respondApproval('changes_requested')">
+        🔄 Request changes
+      </button>
+    </div>`;
+  document.getElementById('approvalModal').classList.add('open');
+}
+
+async function respondApproval(status) {
+  const notes = document.getElementById('am_notes')?.value.trim();
+  if (status === 'changes_requested' && !notes) {
+    showToast('Please add notes describing what needs to change.', 'error'); return;
+  }
+
+  await db.from('approvals').update({ status, client_notes: notes || null, responded_at: new Date().toISOString() }).eq('id', currentApproval);
+
+  // Get approval title for notification
+  const { data: approval } = await db.from('approvals').select('title').eq('id', currentApproval).single();
+
+  // Notify Phil
+  const clientName = userProfile?.full_name || userProfile?.business_name || currentUser.email;
+  await notifyPhilApprovalResponse(clientName, project.name, approval?.title || 'Approval', status, notes);
+
+  closeModal('approvalModal');
+  showToast(status === 'approved' ? 'Approved — thanks!' : 'Feedback sent to AXRIK.', 'success');
+  await loadApprovals();
+  updateBadges();
+}
+
+// ── Updates ───────────────────────────────────────────────────
+async function loadUpdates() {
+  const { data } = await db.from('project_updates').select('*').eq('project_id', project.id).order('created_at', { ascending: false });
+  const feed = document.getElementById('updateFeed');
+
+  if (!data?.length) { feed.innerHTML = `<div class="empty-state">No updates yet.</div>`; return; }
+
+  feed.innerHTML = data.map((u, i) => `
+    <div class="update-item">
+      <div class="update-dot-col"><div class="update-dot"></div>${i < data.length - 1 ? '<div class="update-line"></div>' : ''}</div>
+      <div class="update-content">
+        <div class="update-meta">${formatDateTime(u.created_at)}</div>
+        <div class="update-message">${renderMessageWithLoom(u.message)}</div>
+        ${u.stage_at_time ? `<span class="update-stage-tag">${getStageLabel(u.stage_at_time)}</span>` : ''}
+      </div>
+    </div>`).join('');
+
+  // Check if rating prompt should show
+  await checkRatingPrompt();
+}
+
+async function checkRatingPrompt() {
+  // Show if we've moved past at least one stage (not in discovery)
+  if (project.stage === 'discovery') return;
+
+  const previousStageKey = STAGES[getStageIndex(project.stage) - 1]?.key;
+  if (!previousStageKey) return;
+
+  // Check if already rated
+  const { data: existing } = await db.from('stage_ratings').select('id').eq('project_id', project.id).eq('stage', previousStageKey).maybeSingle();
+  if (existing) return;
+
+  const prompt = document.getElementById('ratingPrompt');
+  document.getElementById('ratingStageLabel').textContent = getStageLabel(previousStageKey);
+  prompt.style.display = 'block';
+  previousStage = previousStageKey;
+}
+
+async function submitRating(rating) {
+  if (!previousStage) return;
+
+  await db.from('stage_ratings').upsert({
+    project_id: project.id, stage: previousStage, rating,
+    comment: document.getElementById('ratingComment').value.trim() || null,
+    created_by: currentUser.id,
+  });
+
+  document.getElementById('ratingPrompt').style.display = 'none';
+  showToast('Thanks for the feedback! 🙌', 'success');
+}
+
+// ── Comments ──────────────────────────────────────────────────
+async function loadComments() {
+  const { data } = await db.from('comments').select('*, user_profiles(full_name, role)').eq('project_id', project.id).order('created_at', { ascending: true });
+  const thread = document.getElementById('commentThread');
+
+  if (!data?.length) { thread.innerHTML = `<div class="empty-state">No messages yet. Use the box below to ask questions.</div>`; return; }
+
+  thread.innerHTML = data.map(c => {
+    const isMe    = c.user_id === currentUser.id;
+    const isAxrik = c.user_profiles?.role === 'admin';
+    const name    = isAxrik ? 'AXRIK' : (c.user_profiles?.full_name || 'You');
+    return `
+      <div class="comment-bubble ${isMe ? 'comment-bubble--mine' : ''}">
+        <div class="comment-avatar">${name.charAt(0).toUpperCase()}</div>
+        <div class="comment-body">
+          <div class="comment-text">${renderMessageWithLoom(c.message)}</div>
+          <div class="comment-time">${name} · ${formatDateTime(c.created_at)}</div>
+        </div>
+      </div>`;
+  }).join('');
+  thread.scrollTop = thread.scrollHeight;
+}
+
+document.getElementById('sendCommentBtn').addEventListener('click', sendComment);
+document.getElementById('commentInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendComment(); } });
+
+async function sendComment() {
+  const input = document.getElementById('commentInput');
+  const msg = input.value.trim(); if (!msg) return;
+  input.value = '';
+  document.getElementById('sendCommentBtn').disabled = true;
+
+  try {
+    await db.from('comments').insert({ project_id: project.id, user_id: currentUser.id, message: msg, is_read: false });
+    db.functions.invoke('notify-comment', { body: { project_id: project.id, project_name: project.name, message: msg } }).catch(() => {});
+    await loadComments();
+  } catch (err) { showToast(err.message || 'Could not send', 'error'); input.value = msg; }
+  finally { document.getElementById('sendCommentBtn').disabled = false; }
+}
+
+// ── Invoices ──────────────────────────────────────────────────
+async function loadInvoices() {
+  const { data } = await db.from('invoices').select('*').eq('project_id', project.id).neq('status', 'draft').order('created_at', { ascending: false });
+  const container = document.getElementById('invoiceList');
+
+  if (!data?.length) { container.innerHTML = `<div class="empty-state">No invoices yet.</div>`; return; }
+
+  const statusStyle = { unpaid: ['var(--amber)', 'var(--amber-dim)', 'Outstanding'], paid: ['var(--green)', 'var(--green-dim)', 'Paid'], overdue: ['var(--red)', 'var(--red-dim)', 'Overdue'], draft: ['var(--text-3)', 'var(--bg-3)', 'Draft'] };
+
+  container.innerHTML = data.map(inv => {
+    const [col, bg, label] = statusStyle[inv.status] || statusStyle.unpaid;
+    return `
+      <div class="card" style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px">${escHtml(inv.title)}</div>
+          <div style="font-size:12px;color:var(--text-3);margin-top:2px">${inv.description ? escHtml(inv.description) + ' · ' : ''}${inv.due_date ? 'Due ' + formatDate(inv.due_date) : 'Due on receipt'}</div>
+          ${inv.paid_at ? `<div style="font-size:11px;color:var(--green);margin-top:2px">Paid ${formatDate(inv.paid_at)}</div>` : ''}
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:20px;font-weight:700">£${parseFloat(inv.amount).toFixed(2)}</div>
+          <div style="padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;color:${col};background:${bg}">${label}</div>
+          ${inv.invoice_url ? `<a href="${escHtml(inv.invoice_url)}" target="_blank" class="btn btn--ghost btn--sm">View PDF ↗</a>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── Support requests ──────────────────────────────────────────
+async function loadSupportRequests() {
+  if (project.stage !== 'live') return;
+  const { data } = await db.from('support_requests').select('*').eq('project_id', project.id).order('created_at', { ascending: false });
+  const container = document.getElementById('supportList');
+  if (!container) return;
+
+  if (!data?.length) { container.innerHTML = `<div class="empty-state">No requests yet.</div>`; return; }
+
+  const statusStyle = { open: ['var(--amber)', '⏳ Open'], in_progress: ['var(--green)', '🔧 In progress'], done: ['var(--text-3)', '✅ Done'], wont_do: ['var(--text-3)', '🚫 Won\'t do'] };
+  const priorityStyle = { high: 'var(--red)', normal: 'var(--text-3)', low: 'var(--text-3)' };
+
+  container.innerHTML = data.map(r => {
+    const [col, label] = statusStyle[r.status] || statusStyle.open;
+    return `
+      <div style="padding:12px 0;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div style="font-size:13px;font-weight:500">${escHtml(r.title)}</div>
+          <div style="font-size:11px;font-weight:600;color:${col};white-space:nowrap">${label}</div>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:2px">${formatDate(r.created_at)}${r.priority === 'high' ? ' · <span style="color:var(--red)">Urgent</span>' : ''}</div>
+        ${r.admin_notes ? `<div style="margin-top:6px;font-size:12px;color:var(--text-2);padding:6px 10px;background:var(--bg-3);border-radius:6px">AXRIK: ${escHtml(r.admin_notes)}</div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+async function submitSupportRequest() {
+  const title = document.getElementById('srTitle').value.trim();
+  const desc  = document.getElementById('srDesc').value.trim();
+  if (!title || !desc) { showToast('Please fill in both fields', 'error'); return; }
+
+  const { error } = await db.from('support_requests').insert({
+    project_id: project.id, submitted_by: currentUser.id,
+    title, description: desc, priority: document.getElementById('srPriority').value,
+  });
+  if (error) { showToast(error.message, 'error'); return; }
+
+  const clientName = userProfile?.full_name || userProfile?.business_name || currentUser.email;
+  await notifyPhilSupportRequest(clientName, project.name, title, desc);
+
+  document.getElementById('srTitle').value = '';
+  document.getElementById('srDesc').value = '';
+  showToast('Request submitted — we\'ll be in touch.', 'success');
+  await loadSupportRequests();
+}
+
+// ── Modal ──────────────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+document.getElementById('mobileMenuBtn').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Portal — AXRIK</title>
+  <link rel="stylesheet" href="portal.css">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0a0a0a">
+</head>
+<body>
+
+<div class="login-page">
+  <div class="login-box">
+
+    <div class="login-logo">
+      <img src="../assets/axrik-logo-transparent.png" alt="AXRIK">
+      <h2>Client Portal</h2>
+      <p>Sign in to track your project and upload files.</p>
+    </div>
+
+    <div class="login-error" id="loginError"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="form-label" for="email">Email address</label>
+        <input class="form-input" type="email" id="email" placeholder="you@example.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input class="form-input" type="password" id="password" placeholder="Your password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn--primary btn--lg" style="width:100%" id="loginBtn">
+        Sign in
+      </button>
+    </form>
+
+    <div class="login-divider">New here? You'll receive an invite email from AXRIK to set up your account.</div>
+
+    <p style="text-align:center; font-size:12px; color:var(--text-3)">
+      Questions? Email <a href="mailto:phil@axrik.com" style="color:var(--green)">phil@axrik.com</a>
+    </p>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase.js"></script>
+<script src="auth.js"></script>
+<script>
+  // If already logged in, redirect appropriately
+  (async () => {
+    const user = await getCurrentUser();
+    if (user) {
+      const role = await getUserRole();
+      window.location.href = role === 'admin' ? 'admin.html' : 'dashboard.html';
+    }
+  })();
+
+  const form     = document.getElementById('loginForm');
+  const errorBox = document.getElementById('loginError');
+  const loginBtn = document.getElementById('loginBtn');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.style.display = 'none';
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Signing in…';
+
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    try {
+      await signIn(email, password);
+      const role = await getUserRole();
+      window.location.href = role === 'admin' ? 'admin.html' : 'dashboard.html';
+    } catch (err) {
+      errorBox.textContent = err.message === 'Invalid login credentials'
+        ? 'Incorrect email or password.'
+        : err.message;
+      errorBox.style.display = 'block';
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Sign in';
+    }
+  });
+</script>
+
+</body>
+</html>

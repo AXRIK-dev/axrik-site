@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AXRIK · Next-Build Checklist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root{ --dark:#0d1726; --dark-2:#111f33; --green:#15a36a; --green-soft:rgba(21,163,106,.12);
+    --green-border:rgba(21,163,106,.28); --white:#fff; --off:#f7f8fa; --line:#e2e6eb;
+    --text:#1c2635; --text-soft:#5a6a7a; --amber:#b7791f; --amber-soft:rgba(183,121,31,.10);
+    --font:'Inter',-apple-system,sans-serif; --serif:'DM Serif Display',Georgia,serif; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);color:var(--text);background:var(--off);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;background:var(--white)}
+  .top{background:var(--dark);padding:34px 48px 30px}
+  .wordmark{font-weight:800;letter-spacing:.18em;color:#fff;font-size:15px}
+  .wordmark .x{color:var(--green)}
+  .pill{display:inline-flex;align-items:center;gap:8px;background:var(--green-soft);border:1px solid var(--green-border);border-radius:20px;padding:5px 14px;margin:20px 0 16px}
+  .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+  .pill span{font-size:11.5px;font-weight:600;color:var(--green);letter-spacing:.04em}
+  .head h1{font-family:var(--serif);color:#fff;font-size:38px;font-weight:400;line-height:1.12;letter-spacing:-.01em}
+  .head h1 em{font-style:normal;color:var(--green)}
+  .head p{color:#aeb9c7;font-size:14px;margin-top:12px;max-width:620px}
+  .green-rule{height:3px;background:var(--green);border:none}
+  .body{padding:34px 48px 46px}
+  h2{font-size:12.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--green);margin:34px 0 14px;display:flex;align-items:center;gap:10px}
+  h2:first-of-type{margin-top:6px}
+  h2 .num{background:var(--green);color:#fff;width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:4px 0 8px}
+  .stat{background:var(--off);border:1px solid var(--line);border-radius:12px;padding:16px 12px;text-align:center}
+  .stat b{display:block;font-family:var(--serif);font-size:26px;color:var(--dark);line-height:1}
+  .stat span{display:block;font-size:11px;color:var(--text-soft);margin-top:7px;font-weight:600}
+  ul{list-style:none}
+  li{position:relative;padding:7px 0 7px 30px;font-size:14px;border-bottom:1px solid var(--line)}
+  li:last-child{border-bottom:none}
+  li::before{content:"";position:absolute;left:0;top:12px;width:15px;height:15px;border:2px solid var(--green-border);border-radius:4px}
+  li b{font-weight:700}
+  li .why{display:block;color:var(--text-soft);font-size:12.5px;margin-top:2px}
+  .flag{background:var(--amber-soft);border:1px solid rgba(183,121,31,.3);border-radius:10px;padding:14px 16px;margin:6px 0 4px;font-size:13.5px}
+  .flag b{color:var(--amber)}
+  .prompt{background:var(--dark-2);color:#dbe4ee;border-radius:10px;padding:13px 15px;font-size:12.5px;font-family:ui-monospace,Menlo,monospace;line-height:1.5;margin:6px 0;white-space:pre-wrap}
+  .prompt .lbl{display:block;color:var(--green);font-family:var(--font);font-weight:700;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px}
+  .phase{display:grid;grid-template-columns:auto 1fr;gap:0 16px;margin:2px 0}
+  .phase .step{font-family:var(--serif);font-size:20px;color:var(--green);line-height:1.3}
+  .phase .txt{padding:6px 0 14px;border-bottom:1px solid var(--line);font-size:14px}
+  .phase:last-child .txt{border-bottom:none}
+  .phase .txt b{font-weight:700}
+  .phase .txt span{display:block;color:var(--text-soft);font-size:12.5px;margin-top:1px}
+  .foot{background:var(--off);border-top:1px solid var(--line);padding:20px 48px;font-size:12.5px;color:var(--text-soft)}
+  .foot b{color:var(--text)}
+  @media print{body{background:#fff}.wrap{max-width:none}li::before{border-color:#999}}
+  @media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}.top,.body,.foot{padding-left:24px;padding-right:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="wordmark">A<span class="x">X</span>RIK</div>
+    <div class="pill"><span class="dot"></span><span>NEXT-BUILD PLAYBOOK · ONE PAGE</span></div>
+    <div class="head">
+      <h1>The next client, in <em>half the time</em>.</h1>
+      <p>JG Foods took ~35h over 7 sessions — roughly half of it rework. This is the single checklist that turns the kit, skills and prompts into a ~15–18h build. Set up once, then mostly just talk to Claude.</p>
+    </div>
+  </div>
+  <hr class="green-rule">
+  <div class="body">
+
+    <div class="stats">
+      <div class="stat"><b>~35h</b><span>FIRST BUILD</span></div>
+      <div class="stat"><b>~15–18h</b><span>TARGET NEXT</span></div>
+      <div class="stat"><b>~60%</b><span>DONE DAY ONE</span></div>
+      <div class="stat"><b>3→1</b><span>SQL FILES, NOT 16</span></div>
+    </div>
+
+    <h2><span class="num">A</span> One-time setup — do once, ~15 min</h2>
+    <ul>
+      <li><b>Three skills installed</b> — axrik-project-kickoff, axrik-ai-features, axrik-deliverables.
+        <span class="why">✓ Already installed and auto-triggering. Just say "new AXRIK client".</span></li>
+      <li><b>Fold the Supabase addendum into supabase-patterns</b> — day-one role-based RLS, trigger fixes, the place_order RPC, self-service user management.
+        <span class="why">⚠ Not done yet — see flag below. This is the biggest single time-saver.</span></li>
+      <li><b>Push the starter kit as a GitHub template repo</b> — <code>git@github-axrik:AXRIK-dev/axrik-starter-kit.git</code>, then GitHub → Settings → tick "Template repository".
+        <span class="why">⚠ No starter-kit folder found in this workspace — see flag below.</span></li>
+      <li><b>Move the whole kit out of the JG Foods folder</b> into the shared AXRIK folder, so it isn't tied to one client.
+        <span class="why">Keeps the reusable kit client-neutral.</span></li>
+    </ul>
+
+    <div class="flag"><b>⚠ Setup gaps I found:</b> The three skills are installed, but the <b>supabase-patterns skill does not yet contain the addendum patterns</b> (no place_order, app_settings or self-service user code in it), and there is <b>no starter-kit folder anywhere in this AXRIK workspace</b> — only the guide documents. The <code>_AXRIK-Build-Kit/</code> folder (with <code>starter-kit/</code> and <code>supabase-patterns-ADDENDUM.md</code>) is likely still sitting inside the JG Foods folder. Locate it, fold in the addendum, push the starter kit as a template, and move the kit across <b>before</b> the next client — otherwise you lose the 60% head start.</div>
+
+    <h2><span class="num">B</span> Each new client — the repeatable flow</h2>
+    <div class="phase"><div class="step">1</div><div class="txt"><b>Kick off — discovery first, schema before screens.</b><span>New project for the client. Give Claude their real order messages / spreadsheets / invoice format. Confirm the data model before any screens are written.</span></div></div>
+    <div class="phase"><div class="step">2</div><div class="txt"><b>Clone the backend from the template.</b><span>Create repo from template, <code>cp config.example.js config.js</code> (Supabase URL + anon key + branding). Tell Claude delivery days, order channels, invoice y/n → it customises the >>> markers in 001/002/003. Run them in Supabase, then the "promote owner to admin" snippet. Secure & ordering-ready in ~30 min.</span></div></div>
+    <div class="phase"><div class="step">3</div><div class="txt"><b>Build on the shells: website → admin → AI.</b><span>Website and admin shells already do auth, role gate, live catalogue and ordering. Add features by asking. AI features come <b>last</b>, each with a non-AI fallback so the button always works.</span></div></div>
+    <div class="phase"><div class="step">4</div><div class="txt"><b>Go live & hand over from templates.</b><span>Go-live checklist (DNS, auth invite + admin promotion, storage buckets, Netlify env vars, EmailJS IDs, data cleanup, smoke tests), client testing worksheet, build summary, by-the-numbers.</span></div></div>
+    <div class="phase"><div class="step">5</div><div class="txt"><b>End every session with the hygiene sweep.</b><span>Leftover placeholders? Any table missing RLS? Any AI button without a fallback? What's still stubbed? — this kills the "fix" commits that ate the first build.</span></div></div>
+
+    <h2><span class="num">C</span> Build the habits that pre-solve the 5 rework causes</h2>
+    <ul>
+      <li><b>Ship role-based RLS in the first migration</b> — admin / staff / account / public; financial tables admin-only from day one. <span class="why">Cause #1, the biggest win: security was hardened 4 times on JG Foods.</span></li>
+      <li><b>Use the corrected starter schema + triggers</b> — slot-count updates on slot moves, signup trigger handles null metadata. <span class="why">Cause #2: edge cases were found in production.</span></li>
+      <li><b>Land the whole spine in 3 consolidated SQL files</b>, not incremental migrations. <span class="why">Cause #3: 16 migrations grew one at a time.</span></li>
+      <li><b>Put config in an <code>app_settings</code> key/value table</b>, never constants — delivery days, cut-offs, copy. <span class="why">Cause #4: every tweak was a code change.</span></li>
+      <li><b>Run the end-of-session hygiene sweep every time.</b> <span class="why">Cause #5: stale placeholders shipped to the client.</span></li>
+    </ul>
+
+    <h2><span class="num">D</span> The prompts that drive it</h2>
+    <div class="prompt"><span class="lbl">1 · Kickoff (project start)</span>New AXRIK client: [name], a [type] in [location]. Here are their order messages / spreadsheets / invoice format [attach]. Follow the kickoff workflow — propose the data model first (from the starter kit, tell me what to customise), then the build phases. Don't write screens until I've confirmed the schema.</div>
+    <div class="prompt"><span class="lbl">2 · Stand up the backend (day one)</span>Clone the starter-kit migrations for [client]. Customise the >>>-marked CHECK constraints: delivery days [days], order channels [channels], reference prefix [XX]. [Keep/drop] invoicing. Give me final 001/002/003 SQL ready to run, the run order, and the exact promote-owner-to-admin snippet with [owner email].</div>
+    <div class="prompt"><span class="lbl">3 · Customer website (phase 1)</span>Build the [client] website as a single responsive HTML file in their branding [colours/logo]. Lead with the business problem and outcomes, not tech. Sections: hero, about, how it works, product showcase live from Supabase, trade/wholesale path, contact form (EmailJS). Wire the order form to place_order RPC with the slot picker.</div>
+    <div class="prompt"><span class="lbl">4 · Admin screen (phase 2, repeat)</span>Add a [feature] page to the [client] admin app, following the existing showPage() shell. Render from a single live Supabase fetch on open, respect admin/staff RLS roles, read config from app_settings. Match existing pages. Add a matching entry to the in-admin HELP_PAGES guide.</div>
+    <div class="prompt"><span class="lbl">5 · AI feature (phase 3)</span>Add an AI [order-parse / message-redraft / social-post / summary] feature to [client], following the AI-features pattern. Route through the existing /.netlify/functions/ai proxy, build a non-AI fallback so the button always works without a key. AI drafts, client confirms before send/save.</div>
+    <div class="prompt"><span class="lbl">6 · Build summary (end of session)</span>Update build summary: [what was done this session]. (Replaces in place AND posts to the AXRIK portal via portal-update — same filenames, never numbered versions.)</div>
+    <div class="prompt"><span class="lbl">7 · Go-live & handover (launch)</span>[Client] is ready for go-live. Following the deliverables pattern, produce the go-live checklist, a client-runnable testing worksheet, and refresh the build summary. AXRIK black/white/green branding, first person as me, UK English.</div>
+    <div class="prompt"><span class="lbl">8 · Client update email (any time)</span>Draft a short update email to [client] about [what's new]. First person as me, warm, UK English, lead with the outcome, flag anything I need from them, end with what's next. No jargon.</div>
+    <div class="prompt"><span class="lbl">9 · Hygiene sweep (every session)</span>Before we finish: scan for leftover placeholders or stale integration notes, confirm every table has RLS, confirm every AI feature has a fallback, and list anything still stubbed so it doesn't surprise me next session.</div>
+
+  </div>
+  <div class="foot"><b>The one-line version:</b> Set up once — fold in the Supabase addendum, push the starter kit as a GitHub template, move the kit out of JG Foods. Each client — say "new AXRIK client", confirm the schema, clone the template, build on the shells, hand over from templates, sweep every session. <b>Target ~15–18h instead of 35.</b></div>
+</div>
+</body>
+</html>

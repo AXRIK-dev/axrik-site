@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AXRIK — Price Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root{ --dark:#0d1726; --dark-2:#111f33; --green:#15a36a; --green-soft:rgba(21,163,106,.12);
+    --green-border:rgba(21,163,106,.28); --white:#fff; --off:#f7f8fa; --line:#e2e6eb;
+    --text:#1c2635; --text-soft:#5a6a7a; --font:'Inter',-apple-system,sans-serif; --serif:'DM Serif Display',Georgia,serif; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--font);color:var(--text);background:var(--off);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .sheet{max-width:960px;margin:0 auto;background:#fff;box-shadow:0 20px 60px -30px rgba(13,23,38,.5)}
+  .top{background:var(--dark)}
+  .topbar{padding:14px 48px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.06)}
+  .wordmark{font-size:20px;font-weight:800;letter-spacing:.38em;padding-left:.38em;color:#fff;text-transform:uppercase}
+  .wordmark .x{color:var(--green)}
+  .topbar .r{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase}
+  .head{padding:50px 48px 52px}
+  .pill{display:inline-flex;align-items:center;gap:8px;background:var(--green-soft);border:1px solid var(--green-border);border-radius:20px;padding:5px 14px;margin-bottom:22px}
+  .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+  .pill span{font-size:12px;font-weight:600;color:var(--green)}
+  .head h1{font-family:var(--serif);color:#fff;font-size:38px;font-weight:400;line-height:1.1;letter-spacing:-.01em}
+  .head h1 em{font-style:normal;color:var(--green)}
+  .head p{color:rgba(255,255,255,.66);font-size:15px;margin-top:16px;max-width:640px}
+  .green-rule{height:3px;background:var(--green);border:none}
+  .body{padding:44px 48px 52px}
+  h2{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin:0 0 8px}
+  .h2sub{font-size:13px;color:var(--text-soft);margin:0 0 18px}
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .tier{border:1px solid var(--line);border-radius:14px;padding:24px 22px;display:flex;flex-direction:column;background:#fff}
+  .tier.flag{border:1.5px solid var(--green);box-shadow:0 14px 40px -22px rgba(21,163,106,.5);position:relative}
+  .tier.flag .flagtag{position:absolute;top:-11px;left:22px;background:var(--green);color:#fff;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 11px;border-radius:20px}
+  .tier .tname{font-family:var(--serif);font-size:22px;color:var(--dark)}
+  .tier .who{font-size:12.5px;color:var(--text-soft);margin-top:4px;min-height:36px}
+  .tier .price{margin:16px 0 14px;font-family:var(--serif);font-size:30px;color:var(--dark);line-height:1}
+  .tier .price small{font-family:var(--font);font-size:12px;font-weight:600;color:var(--text-soft);display:block;margin-bottom:2px}
+  .tier ul{list-style:none;margin:8px 0 0;padding-top:14px;border-top:1px solid var(--line);flex:1}
+  .tier li{font-size:13px;color:var(--text);padding:5px 0 5px 22px;position:relative}
+  .tier li::before{content:"";position:absolute;left:0;top:10px;width:11px;height:7px;border-left:2px solid var(--green);border-bottom:2px solid var(--green);transform:rotate(-45deg)}
+  .tier .build{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--text-soft)}
+  .tier .build b{color:var(--dark)}
+
+  .takeover{margin-top:18px;background:var(--dark);border-radius:14px;padding:26px 28px;display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:center}
+  .takeover .tl h3{font-family:var(--serif);color:#fff;font-size:22px;font-weight:400;margin-bottom:6px}
+  .takeover .tl h3 em{font-style:normal;color:var(--green)}
+  .takeover .tl .price{font-family:var(--serif);color:#fff;font-size:26px;margin:10px 0 2px}
+  .takeover .tl .price small{font-family:var(--font);font-size:12px;font-weight:600;color:rgba(255,255,255,.5)}
+  .takeover .tl p{color:rgba(255,255,255,.7);font-size:13px;margin-top:8px}
+  .takeover ul{list-style:none}
+  .takeover li{font-size:13px;color:rgba(255,255,255,.85);padding:5px 0 5px 22px;position:relative}
+  .takeover li::before{content:"";position:absolute;left:0;top:10px;width:11px;height:7px;border-left:2px solid var(--green);border-bottom:2px solid var(--green);transform:rotate(-45deg)}
+
+  .care{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px}
+  .cp{background:var(--off);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  .cp .cn{font-weight:800;color:var(--dark);font-size:14px;letter-spacing:.02em}
+  .cp .cpr{font-family:var(--serif);font-size:24px;color:var(--dark);margin:4px 0 8px}
+  .cp .cpr small{font-family:var(--font);font-size:12px;font-weight:600;color:var(--text-soft)}
+  .cp p{font-size:12.5px;color:var(--text-soft)}
+
+  .addons{display:grid;grid-template-columns:1fr 1fr;gap:8px 26px;margin-top:4px}
+  .addons div{font-size:13.5px;color:var(--text);padding:7px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:14px}
+  .addons b{color:var(--dark);font-weight:700;white-space:nowrap}
+
+  .value{background:var(--dark);border-radius:14px;padding:26px 28px;margin-top:38px}
+  .value h3{font-family:var(--serif);color:#fff;font-size:21px;font-weight:400;margin-bottom:8px}
+  .value h3 em{font-style:normal;color:var(--green)}
+  .value p{color:rgba(255,255,255,.72);font-size:14px}
+  .terms{margin-top:30px;background:var(--green-soft);border:1px solid var(--green-border);border-radius:12px;padding:18px 22px;font-size:13.5px;color:var(--text)}
+  .terms b{color:var(--dark)}
+  .terms p + p{margin-top:10px}
+  .foot{padding:20px 48px 30px;border-top:1px solid var(--line);color:var(--text-soft);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .note{font-size:11.5px;color:#9aa5b4;margin-top:14px;font-style:italic}
+  @media print{body{background:#fff}.sheet{box-shadow:none}.tier.flag{box-shadow:none}}
+  @media(max-width:760px){.tiers,.care,.addons,.takeover{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="top">
+    <div class="topbar"><div class="wordmark">A<span class="x">X</span>RIK</div><div class="r">Web App Development · Price Guide</div></div>
+    <div class="head">
+      <div class="pill"><span class="dot"></span><span>Official price guide · 2026</span></div>
+      <h1>Agency-grade software,<br>without the <em>agency price.</em></h1>
+      <p>Clear, fixed-price packages with a written scope, plus a simple monthly care plan so everything keeps running. No hourly billing and no surprise invoices — you'll know the price before any work begins.</p>
+    </div>
+    <hr class="green-rule">
+  </div>
+
+  <div class="body">
+    <h2>Build packages</h2>
+    <p class="h2sub">A one-off project fee, agreed up front. Every package starts from the price shown and is confirmed against your written scope.</p>
+    <div class="tiers">
+
+      <div class="tier">
+        <div class="tname">Starter</div>
+        <div class="who">A polished, professional presence for a business that needs to be found and trusted online.</div>
+        <div class="price"><small>from</small>£1,200</div>
+        <ul>
+          <li>Responsive marketing website (up to ~5 pages)</li>
+          <li>Mobile-first, fast, modern design</li>
+          <li>Contact / enquiry form, emailed to you</li>
+          <li>Search engine &amp; Google basics set up</li>
+          <li>Domain &amp; hosting configured for you</li>
+        </ul>
+        <div class="build"><b>Typical timescale:</b> around 1 week<br><b>Pairs with:</b> Essential care plan</div>
+      </div>
+
+      <div class="tier">
+        <div class="tname">Standard</div>
+        <div class="who">A website that does a job — taking orders, bookings or enquiries, with a simple admin behind it.</div>
+        <div class="price"><small>from</small>£3,000</div>
+        <ul>
+          <li>Everything in Starter</li>
+          <li>Online ordering or booking, end-to-end</li>
+          <li>Simple admin dashboard to manage it</li>
+          <li>Customer records &amp; enquiry inbox</li>
+          <li>Scheduling / delivery or appointment slots</li>
+          <li>One AI helper (e.g. social post drafts)</li>
+        </ul>
+        <div class="build"><b>Typical timescale:</b> around 2 weeks<br><b>Pairs with:</b> Growth care plan</div>
+      </div>
+
+      <div class="tier flag">
+        <div class="flagtag">Most complete</div>
+        <div class="tname">Custom</div>
+        <div class="who">A bespoke web app built around how your business actually runs, day to day.</div>
+        <div class="price"><small>from</small>£4,500</div>
+        <ul>
+          <li>Everything in Standard</li>
+          <li>Full custom admin app (multiple sections)</li>
+          <li>Secure database &amp; role-based access</li>
+          <li>Auto-invoicing — branded PDF, WhatsApp/email</li>
+          <li>Finance suite &amp; spreadsheet import</li>
+          <li>Multiple live AI features</li>
+          <li>Payments-ready foundation</li>
+          <li>Full handover pack &amp; training</li>
+        </ul>
+        <div class="build"><b>Typical timescale:</b> around 3–4 weeks<br><b>Pairs with:</b> Partner care plan</div>
+      </div>
+
+    </div>
+
+    <h2 style="margin-top:42px">Already have a website?</h2>
+    <p class="h2sub">If your site was built elsewhere, we can take it on, look after it and improve it over time — no rebuild needed.</p>
+    <div class="takeover">
+      <div class="tl">
+        <h3>Site <em>takeover</em> &amp; care</h3>
+        <div class="price"><small>one-off onboarding from</small><br>£350</div>
+        <p>then a monthly care plan of your choice. If you later decide on a full rebuild, your onboarding fee comes off the build price.</p>
+      </div>
+      <ul>
+        <li>Full review of your current site &amp; setup</li>
+        <li>Secure handover of access &amp; accounts</li>
+        <li>Any urgent fixes sorted on day one</li>
+        <li>Brought into our managed hosting &amp; monitoring</li>
+        <li>Ongoing changes handled by your care plan</li>
+      </ul>
+    </div>
+
+    <h2 style="margin-top:42px">Care plans</h2>
+    <p class="h2sub">A simple monthly plan that keeps your site secure, backed up and looked after. Begins at handover, rolling monthly, cancel anytime.</p>
+    <div class="care">
+      <div class="cp">
+        <div class="cn">ESSENTIAL</div>
+        <div class="cpr">£45<small>/mo</small></div>
+        <p>Hosting managed, security &amp; backups, uptime monitoring, and up to 30 minutes of small changes each month.</p>
+      </div>
+      <div class="cp">
+        <div class="cn">GROWTH</div>
+        <div class="cpr">£95<small>/mo</small></div>
+        <p>Everything in Essential, plus up to 1 hour of changes each month, priority support and AI running costs covered.</p>
+      </div>
+      <div class="cp">
+        <div class="cn">PARTNER</div>
+        <div class="cpr">£175<small>/mo</small></div>
+        <p>Everything in Growth, plus up to 2.5 hours of changes, fast turnaround and a quarterly review of what's next.</p>
+      </div>
+    </div>
+
+    <h2 style="margin-top:42px">Optional add-ons</h2>
+    <div class="addons">
+      <div><span>Online card payments (Stripe)</span><b>from £600</b></div>
+      <div><span>Extra AI feature</span><b>from £450</b></div>
+      <div><span>Additional admin section</span><b>from £500</b></div>
+      <div><span>Copywriting / content</span><b>from £300</b></div>
+      <div><span>Logo &amp; brand basics</span><b>from £350</b></div>
+      <div><span>Faster delivery</span><b>+25%</b></div>
+    </div>
+
+    <div class="value">
+      <h3>Why it costs a <em>fraction</em> of an agency</h3>
+      <p>The same scope — a custom web app, customer site, database, live AI and a payments-ready foundation — is usually a multi-week, five-figure agency project (in the UK, custom web apps typically start at £10,000). An AI-accelerated way of working lets AXRIK deliver that in a fraction of the time, and that saving is passed straight to you. The same software, for a much smaller invoice.</p>
+    </div>
+
+    <div class="terms">
+      <p><b>How pricing works:</b> Every package starts from the guide price shown and is confirmed in a written quote against an agreed scope before any work begins. You pay 50% to start and 50% on go-live. If the scope changes, we agree the change — and any cost — with you in writing first, so there are never any surprises.</p>
+      <p><b>Our promise:</b> This is AXRIK's official price guide. All AXRIK work, by anyone working on our behalf, is quoted from this guide. If you're ever offered something different, please check with us directly at phil@axrik.com.</p>
+    </div>
+
+    <p class="note">Guide prices to help you plan. Final quote confirmed in writing per project. No VAT — the price you're quoted is the price you pay.</p>
+  </div>
+
+  <div class="foot"><span>AXRIK · Web App Development</span><span>phil@axrik.com</span></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Project — AXRIK Portal</title>
+  <link rel="stylesheet" href="portal.css">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0a0a0a">
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<div class="portal-layout">
+
+  <!-- ── Sidebar ──────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="../index.html"><img src="../assets/axrik-logo-transparent.png" alt="AXRIK"></a>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="sidebar-section-label">My Project</span>
+      <a href="dashboard.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="project.html" id="projectLink">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Project details
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar">?</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebarName">Loading…</div>
+          <div class="sidebar-user-role">Client</div>
+        </div>
+        <button class="sidebar-signout" onclick="signOut()" title="Sign out">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ─────────────────────────────────────────────── -->
+  <main class="portal-main" id="mainContainer">
+    <div class="loading" style="margin-top:80px"><div class="spinner"></div> Loading your project…</div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="supabase.js"></script>
+<script src="auth.js"></script>
+<script>
+let currentUser, userProfile, project;
+
+async function init() {
+  currentUser = await requireAuth();
+  if (!currentUser) return;
+
+  const role = await getUserRole();
+  if (role === 'admin') { window.location.href = 'admin.html'; return; }
+
+  try { userProfile = await getUserProfile(currentUser.id); } catch {}
+
+  const name = userProfile?.full_name || currentUser.email.split('@')[0];
+  document.getElementById('sidebarName').textContent = name;
+  document.getElementById('sidebarAvatar').textContent = name.charAt(0).toUpperCase();
+
+  // EmailJS init
+  if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
+
+  await loadProject();
+}
+
+async function loadProject() {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('client_id', currentUser.id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error || !data) {
+    document.getElementById('mainContainer').innerHTML = `
+      <div class="portal-header"><div><h1>Welcome</h1><p>Your portal is ready.</p></div></div>
+      <div class="empty-state" style="margin-top:40px">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px;color:var(--text-3)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <strong>No project set up yet</strong>
+        <p>Your project will appear here once AXRIK has set it up. Questions? <a href="mailto:hello@axrik.com" style="color:var(--green)">hello@axrik.com</a></p>
+      </div>`;
+    return;
+  }
+
+  project = data;
+  document.getElementById('projectLink').href = `project.html?id=${project.id}`;
+
+  // If project is live, show celebration
+  if (project.stage === 'live') {
+    await renderLiveCelebration();
+    return;
+  }
+
+  await renderDashboard();
+}
+
+async function renderLiveCelebration() {
+  // Load referral prompt data
+  const clientName = userProfile?.full_name || currentUser.email.split('@')[0];
+
+  document.getElementById('mainContainer').innerHTML = `
+    <!-- Confetti canvas -->
+    <canvas id="confettiCanvas" style="position:fixed;inset:0;pointer-events:none;z-index:999;width:100%;height:100%;"></canvas>
+
+    <div style="max-width:680px;margin:0 auto;text-align:center;padding:60px 20px;">
+      <!-- Celebration heading -->
+      <div style="font-size:56px;margin-bottom:20px;">🎉</div>
+      <h1 style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;margin-bottom:12px;line-height:1.2;">
+        You're live!
+      </h1>
+      <p style="color:var(--text-2);font-size:16px;max-width:480px;margin:0 auto 36px;line-height:1.7;">
+        Your website is built and ready for the world. Congratulations — this is a big deal. Here's everything you need to get going.
+      </p>
+
+      <!-- Website link card -->
+      ${project.website_url ? `
+      <div class="card" style="margin-bottom:20px;text-align:left;background:var(--green-dim);border-color:rgba(37,163,112,0.3)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--green);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:4px">Your website</div>
+            <div style="font-size:18px;font-weight:600;">${escHtml(project.website_url.replace(/^https?:\/\//, ''))}</div>
+          </div>
+          <a href="${escHtml(project.website_url)}" target="_blank" rel="noopener" class="btn btn--primary btn--lg">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            View your site ↗
+          </a>
+        </div>
+      </div>` : ''}
+
+      <!-- Quick links -->
+      <div class="card-grid card-grid--2" style="margin-bottom:28px;text-align:left">
+        <a href="project.html?id=${project.id}#support" class="card" style="cursor:pointer;transition:border-color 0.15s;text-decoration:none" onmouseover="this.style.borderColor='var(--border-2)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:22px;margin-bottom:8px">🛠️</div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:4px">Need a change?</div>
+          <div style="font-size:13px;color:var(--text-2)">Submit a change request and we'll get it sorted.</div>
+        </a>
+        <a href="project.html?id=${project.id}#invoices" class="card" style="cursor:pointer;transition:border-color 0.15s;text-decoration:none" onmouseover="this.style.borderColor='var(--border-2)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:22px;margin-bottom:8px">💳</div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:4px">Invoices</div>
+          <div style="font-size:13px;color:var(--text-2)">View your payment history.</div>
+        </a>
+      </div>
+
+      <!-- Referral section -->
+      <div class="card" style="text-align:left;background:var(--bg-2)">
+        <div style="font-size:20px;margin-bottom:10px">🤝</div>
+        <div style="font-weight:700;font-size:15px;font-family:'Syne',sans-serif;margin-bottom:6px">Know another business that could do with this?</div>
+        <p style="font-size:13px;color:var(--text-2);margin-bottom:16px;line-height:1.6">
+          If you refer a business to AXRIK that goes on to build with us, we'll give them a discount on their first project — and we'll look after you too.
+        </p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <a href="mailto:?subject=Thought%20you%27d%20like%20this&body=I%20just%20had%20my%20website%20built%20by%20AXRIK%20and%20I%20think%20you%27d%20love%20what%20they%20do.%20Check%20them%20out%3A%20https%3A%2F%2Faxrik.com%20%E2%80%94%20mention%20my%20name%20when%20you%20get%20in%20touch."
+            class="btn btn--primary btn--sm">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Send a referral email
+          </a>
+          <button class="btn btn--outline btn--sm" onclick="copyReferral()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy referral link
+          </button>
+        </div>
+      </div>
+    </div>`;
+
+  startConfetti();
+}
+
+async function renderDashboard() {
+  // Load all data in parallel
+  const [updatesRes, docRequestsRes, approvalsRes, invoicesRes, commentsRes] = await Promise.all([
+    db.from('project_updates').select('*').eq('project_id', project.id).order('created_at', { ascending: false }).limit(3),
+    db.from('document_requests').select('*').eq('project_id', project.id).eq('is_completed', false),
+    db.from('approvals').select('*').eq('project_id', project.id).eq('status', 'pending'),
+    db.from('invoices').select('*').eq('project_id', project.id).neq('status', 'draft').order('created_at', { ascending: false }),
+    db.from('comments').select('*').eq('project_id', project.id).eq('is_read', false).neq('user_id', currentUser.id),
+  ]);
+
+  const updates      = updatesRes.data || [];
+  const docRequests  = docRequestsRes.data || [];
+  const approvals    = approvalsRes.data || [];
+  const invoices     = invoicesRes.data || [];
+  const unreadCount  = commentsRes.data?.length || 0;
+  const unpaidInvoices = invoices.filter(i => i.status === 'unpaid' || i.status === 'overdue');
+
+  const stageIdx  = getStageIndex(project.stage);
+  const stageInfo = STAGES.find(s => s.key === project.stage);
+
+  // ── Action banner ──────────────────────────────────────────
+  const actions = [];
+  docRequests.forEach(r => actions.push({ icon: '📁', text: `Upload: ${r.label}`, href: `project.html?id=${project.id}#requests`, urgent: false }));
+  approvals.forEach(a => actions.push({ icon: '✅', text: `Approval needed: ${a.title}`, href: `project.html?id=${project.id}#approvals`, urgent: true }));
+  if (unreadCount > 0) actions.push({ icon: '💬', text: `${unreadCount} new message${unreadCount > 1 ? 's' : ''} from AXRIK`, href: `project.html?id=${project.id}#comments`, urgent: true });
+  unpaidInvoices.forEach(i => actions.push({ icon: '💳', text: `Invoice due: ${i.title} — £${parseFloat(i.amount).toFixed(2)}`, href: `project.html?id=${project.id}#invoices`, urgent: i.status === 'overdue' }));
+
+  const bannerHtml = actions.length ? `
+    <div style="background:var(--bg-2);border:1px solid rgba(37,163,112,0.25);border-radius:var(--radius-lg);padding:20px;margin-bottom:24px;">
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--green);margin-bottom:12px;display:flex;align-items:center;gap:7px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        What we need from you (${actions.length})
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        ${actions.map(a => `
+          <a href="${a.href}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-3);border:1px solid ${a.urgent ? 'rgba(37,163,112,0.2)' : 'var(--border)'};border-radius:8px;color:var(--text);text-decoration:none;font-size:13px;transition:border-color 0.15s;" onmouseover="this.style.borderColor='var(--border-2)'" onmouseout="this.style.borderColor='${a.urgent ? 'rgba(37,163,112,0.2)' : 'var(--border)'}'">
+            <span style="font-size:16px">${a.icon}</span>
+            <span style="flex:1">${escHtml(a.text)}</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-3)"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>`).join('')}
+      </div>
+    </div>` : '';
+
+  // ── Stage steps ────────────────────────────────────────────
+  const stageSteps = STAGES.map((s, i) => {
+    const cls = i < stageIdx ? 'completed' : i === stageIdx ? 'current' : '';
+    const icon = i < stageIdx
+      ? `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`
+      : (i + 1).toString();
+    return `<div class="stage-step ${cls}"><div class="stage-dot">${icon}</div><div class="stage-label">${s.label}</div></div>`;
+  }).join('');
+
+  // ── Recent updates ─────────────────────────────────────────
+  const updatesHtml = updates.length
+    ? updates.map((u, i) => `
+      <div class="update-item">
+        <div class="update-dot-col"><div class="update-dot"></div>${i < updates.length - 1 ? '<div class="update-line"></div>' : ''}</div>
+        <div class="update-content">
+          <div class="update-meta">${formatDateTime(u.created_at)}</div>
+          <div class="update-message">${renderMessageWithLoom(u.message)}</div>
+          ${u.stage_at_time ? `<span class="update-stage-tag">${getStageLabel(u.stage_at_time)}</span>` : ''}
+        </div>
+      </div>`).join('')
+    : `<div class="empty-state" style="padding:16px">Updates from AXRIK will appear here as we progress.</div>`;
+
+  // ── Invoice summary (show if any unpaid) ──────────────────
+  const invoiceSummaryHtml = unpaidInvoices.length ? `
+    <div class="card" style="margin-bottom:20px;border-color:rgba(224,168,82,0.25)">
+      <div class="card-title" style="color:var(--amber)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Outstanding invoice${unpaidInvoices.length > 1 ? 's' : ''}
+      </div>
+      ${unpaidInvoices.map(inv => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+          <div>
+            <div style="font-size:13px;font-weight:500">${escHtml(inv.title)}</div>
+            <div style="font-size:11px;color:var(--text-3)">${inv.due_date ? 'Due ' + formatDate(inv.due_date) : 'Due on receipt'}</div>
+          </div>
+          <div style="font-size:16px;font-weight:700;color:var(--amber)">£${parseFloat(inv.amount).toFixed(2)}</div>
+        </div>`).join('')}
+      <a href="project.html?id=${project.id}#invoices" class="btn btn--ghost btn--sm" style="margin-top:10px;width:100%;justify-content:center">View invoices →</a>
+    </div>` : '';
+
+  document.getElementById('mainContainer').innerHTML = `
+    <div class="portal-header">
+      <div>
+        <h1>${escHtml(project.name)}</h1>
+        <p>${escHtml(project.description || 'Here\'s where things stand right now.')}</p>
+      </div>
+      <span class="badge badge--${project.stage}">${getStageLabel(project.stage)}</span>
+    </div>
+
+    ${bannerHtml}
+    ${invoiceSummaryHtml}
+
+    <!-- Stage progress -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Build progress
+        <span class="badge badge--${project.stage}" style="margin-left:auto">${getStageLabel(project.stage)}</span>
+      </div>
+      <div class="stage-bar-track">${stageSteps}</div>
+      ${stageInfo ? `<div class="stage-desc">${stageInfo.desc}</div>` : ''}
+    </div>
+
+    <div class="card-grid card-grid--2">
+      <!-- Updates -->
+      <div class="card">
+        <div class="card-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          Latest from AXRIK
+        </div>
+        <div class="update-feed">${updatesHtml}</div>
+        <a href="project.html?id=${project.id}" class="btn btn--ghost btn--sm" style="margin-top:12px;width:100%;justify-content:center">
+          View all updates →
+        </a>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="card">
+        <div class="card-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><zap/><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Quick actions
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <a href="project.html?id=${project.id}#upload" class="btn btn--primary" style="justify-content:center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload files
+          </a>
+          <a href="project.html?id=${project.id}#comments" class="btn btn--outline" style="justify-content:center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Messages${unreadCount > 0 ? ` <span class="kanban-unread" style="margin-left:4px">${unreadCount}</span>` : ''}
+          </a>
+          ${project.preview_url ? `
+          <a href="${escHtml(project.preview_url)}" target="_blank" rel="noopener" class="btn btn--outline" style="justify-content:center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Preview your site ↗
+          </a>` : ''}
+          ${project.website_url ? `
+          <a href="${escHtml(project.website_url)}" target="_blank" rel="noopener" class="btn btn--outline" style="justify-content:center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            View live site ↗
+          </a>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Confetti ──────────────────────────────────────────────────
+function startConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const pieces = Array.from({ length: 120 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * -canvas.height,
+    r: Math.random() * 6 + 4,
+    d: Math.random() * 10 + 5,
+    color: ['#25a370','#2dba80','#ffffff','#a0a0a0','#ffcc44'][Math.floor(Math.random() * 5)],
+    tilt: Math.random() * 10 - 5,
+    tiltSpeed: Math.random() * 0.1,
+    speed: Math.random() * 2 + 1,
+  }));
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.beginPath();
+      ctx.fillStyle = p.color;
+      ctx.ellipse(p.x, p.y, p.r, p.r * 0.6, p.tilt, 0, Math.PI * 2);
+      ctx.fill();
+      p.y += p.speed;
+      p.x += Math.sin(frame * 0.01 + p.d) * 0.5;
+      p.tilt += p.tiltSpeed;
+      if (p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
+    });
+    frame++;
+    if (frame < 300) requestAnimationFrame(draw);
+    else { ctx.clearRect(0, 0, canvas.width, canvas.height); canvas.remove(); }
+  }
+  draw();
+}
+
+function copyReferral() {
+  navigator.clipboard.writeText('https://axrik.com — mention my name when you get in touch!');
+  showToast('Referral link copied!', 'success');
+}
+
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+init();
+</script>
+</body>
+</html>

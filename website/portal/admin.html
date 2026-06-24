@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — AXRIK Portal</title>
+  <link rel="stylesheet" href="portal.css">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0a0a0a">
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<div class="portal-layout">
+  <!-- ── Sidebar ──────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="../index.html"><img src="../assets/axrik-logo-transparent.png" alt="AXRIK"></a>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="sidebar-section-label">Admin</span>
+      <a href="admin.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        All projects
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" style="background:var(--green-dim);border-color:var(--green);color:var(--green)">P</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">Phil</div>
+          <div class="sidebar-user-role">Admin</div>
+        </div>
+        <button class="sidebar-signout" onclick="signOut()" title="Sign out">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ─────────────────────────────────────────────── -->
+  <main class="portal-main">
+    <div class="portal-header">
+      <div><h1>Projects</h1><p>All client builds at a glance.</p></div>
+      <button class="btn btn--primary" onclick="openModal('newProjectModal')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New project
+      </button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-value" id="statTotal">—</div><div class="stat-label">Total projects</div></div>
+      <div class="stat-card"><div class="stat-value" id="statActive">—</div><div class="stat-label">In progress</div></div>
+      <div class="stat-card"><div class="stat-value" id="statLive">—</div><div class="stat-label">Live</div></div>
+      <div class="stat-card"><div class="stat-value" id="statActions" style="color:var(--amber)">—</div><div class="stat-label">Need attention</div></div>
+    </div>
+
+    <div id="kanbanBoard"><div class="loading"><div class="spinner"></div> Loading…</div></div>
+  </main>
+</div>
+
+<!-- ── New Project Modal ──────────────────────────────────── -->
+<div class="modal-overlay" id="newProjectModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">New project</h2>
+      <button class="modal-close" onclick="closeModal('newProjectModal')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <form id="newProjectForm">
+      <div class="form-group">
+        <label class="form-label">Client email *</label>
+        <input class="form-input" id="np_email" type="email" placeholder="client@example.com" required>
+        <p style="font-size:11px;color:var(--text-3);margin-top:4px">The client must already have a Supabase Auth account.</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Project name *</label>
+        <input class="form-input" id="np_name" placeholder="e.g. JG Foods — Mobile Butcher App" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" id="np_desc" placeholder="Brief description…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Stage</label>
+        <select class="form-select" id="np_stage">
+          <option value="discovery">Discovery</option><option value="design">Design</option>
+          <option value="build">Build</option><option value="review">Review</option><option value="live">Live</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Internal notes</label>
+        <textarea class="form-textarea" id="np_notes" placeholder="Not visible to client…" style="min-height:50px"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+        <button type="button" class="btn btn--ghost" onclick="closeModal('newProjectModal')">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="createProjectBtn">Create project</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Project Detail Modal ──────────────────────────────── -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal" style="max-width:780px;padding:0;overflow:hidden">
+    <!-- Modal header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 28px;border-bottom:1px solid var(--border)">
+      <div>
+        <h2 class="modal-title" id="pm_title" style="margin-bottom:2px">Project</h2>
+        <div id="pm_client" style="font-size:12px;color:var(--text-3)"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <a id="pm_clientLink" href="#" target="_blank" class="btn btn--ghost btn--sm" style="display:none">View as client ↗</a>
+        <button class="modal-close" onclick="closeModal('projectModal')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+    </div>
+    <!-- Tabs -->
+    <div style="display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 20px">
+      <button class="pm-tab active" data-pm-tab="overview" onclick="pmTab('overview')" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text-2);border-bottom:2px solid transparent;background:none;border-left:none;border-right:none;border-top:none;cursor:pointer;font-family:inherit;transition:all 0.15s;">Overview</button>
+      <button class="pm-tab" data-pm-tab="requests" onclick="pmTab('requests')" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text-2);border-bottom:2px solid transparent;background:none;border-left:none;border-right:none;border-top:none;cursor:pointer;font-family:inherit;transition:all 0.15s;">File requests</button>
+      <button class="pm-tab" data-pm-tab="approvals" onclick="pmTab('approvals')" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text-2);border-bottom:2px solid transparent;background:none;border-left:none;border-right:none;border-top:none;cursor:pointer;font-family:inherit;transition:all 0.15s;">Approvals</button>
+      <button class="pm-tab" data-pm-tab="files" onclick="pmTab('files')" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text-2);border-bottom:2px solid transparent;background:none;border-left:none;border-right:none;border-top:none;cursor:pointer;font-family:inherit;transition:all 0.15s;">Files</button>
+      <button class="pm-tab" data-pm-tab="messages" onclick="pmTab('messages')" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text-2);border-bottom:2px solid transparent;background:none;border-left:none;border-right:none;border-top:none;cursor:pointer;font-family:inherit;transition:all 0.15s;">Messages <span id="pm_msgBadge" class="kanban-unread" style="display:none;margin-left:4px"></span></button>
+      <button class="pm-tab" data-pm-tab="invoices" onclick="pmTab('invoices')" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text-2);border-bottom:2px solid transparent;background:none;border-left:none;border-right:none;border-top:none;cursor:pointer;font-family:inherit;transition:all 0.15s;">Invoices</button>
+      <button class="pm-tab" data-pm-tab="support" onclick="pmTab('support')" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text-2);border-bottom:2px solid transparent;background:none;border-left:none;border-right:none;border-top:none;cursor:pointer;font-family:inherit;transition:all 0.15s;">Support <span id="pm_supportBadge" class="kanban-unread" style="display:none;margin-left:4px;background:var(--red)"></span></button>
+    </div>
+    <div id="pm_tabContent" style="padding:24px;max-height:60vh;overflow-y:auto">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="supabase.js"></script>
+<script src="auth.js"></script>
+<script>
+// Tab CSS
+document.head.insertAdjacentHTML('beforeend', `<style>
+.pm-tab.active { color: var(--text) !important; border-bottom-color: var(--green) !important; }
+.pm-tab:hover { color: var(--text) !important; background: var(--bg-3) !important; }
+</style>`);
+
+let currentUser, allProjects = [], openProject = null, currentPmTab = 'overview';
+
+async function init() {
+  currentUser = await requireAdmin();
+  if (!currentUser) return;
+  if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'YOUR_EMAILJS_PUBLIC_KEY') emailjs.init(EMAILJS_PUBLIC_KEY);
+  await loadProjects();
+}
+
+async function loadProjects() {
+  const { data, error } = await db.from('projects').select('*').order('updated_at', { ascending: false });
+  if (error || !data) { document.getElementById('kanbanBoard').innerHTML = `<div class="empty-state">Failed to load projects: ${error?.message}</div>`; return; }
+
+  if (!data.length) { allProjects = []; renderStats(); renderKanban(); return; }
+
+  // Fetch profiles for all client IDs
+  const clientIds = [...new Set(data.map(p => p.client_id))];
+  const { data: profiles } = await db.from('user_profiles').select('id, full_name, business_name, phone').in('id', clientIds);
+  const profileMap = (profiles || []).reduce((m, p) => { m[p.id] = p; return m; }, {});
+  data.forEach(p => { p.user_profiles = profileMap[p.client_id] || null; });
+
+  // Get per-project counts
+  const ids = data.map(p => p.id);
+  const [{ data: unreadComments }, { data: pendingApprovals }, { data: openSupport }, { data: unpaidInvoices }, { data: docRequestsPending }] = await Promise.all([
+    db.from('comments').select('project_id').eq('is_read', false).neq('user_id', currentUser.id).in('project_id', ids),
+    db.from('approvals').select('project_id').eq('status', 'pending').in('project_id', ids),
+    db.from('support_requests').select('project_id').eq('status', 'open').in('project_id', ids),
+    db.from('invoices').select('project_id').in('status', ['unpaid','overdue']).in('project_id', ids),
+    db.from('document_requests').select('project_id').eq('is_completed', false).in('project_id', ids),
+  ]);
+
+  const countMap = (arr, key) => (arr || []).reduce((m, r) => { m[r[key]] = (m[r[key]] || 0) + 1; return m; }, {});
+  const unreadMap   = countMap(unreadComments, 'project_id');
+  const approvalMap = countMap(pendingApprovals, 'project_id');
+  const supportMap  = countMap(openSupport, 'project_id');
+  const invoiceMap  = countMap(unpaidInvoices, 'project_id');
+  const reqMap      = countMap(docRequestsPending, 'project_id');
+
+  allProjects = data.map(p => ({
+    ...p,
+    unread:   unreadMap[p.id]   || 0,
+    approvals: approvalMap[p.id] || 0,
+    support:  supportMap[p.id]  || 0,
+    invoices: invoiceMap[p.id]  || 0,
+    requests: reqMap[p.id]      || 0,
+    attention: (unreadMap[p.id] || 0) + (approvalMap[p.id] || 0) + (supportMap[p.id] || 0),
+  }));
+
+  renderStats();
+  renderKanban();
+}
+
+function renderStats() {
+  document.getElementById('statTotal').textContent  = allProjects.length;
+  document.getElementById('statActive').textContent  = allProjects.filter(p => p.stage !== 'live').length;
+  document.getElementById('statLive').textContent    = allProjects.filter(p => p.stage === 'live').length;
+  document.getElementById('statActions').textContent = allProjects.reduce((s, p) => s + p.attention, 0);
+}
+
+function renderKanban() {
+  const board = document.getElementById('kanbanBoard');
+  if (!allProjects.length) { board.innerHTML = `<div class="empty-state">No projects yet.</div>`; return; }
+
+  board.innerHTML = `<div class="kanban">${STAGES.map(stage => {
+    const cards = allProjects.filter(p => p.stage === stage.key);
+    return `<div class="kanban-col">
+      <div class="kanban-col-header">${stage.label}<span class="kanban-col-count">${cards.length}</span></div>
+      <div class="kanban-cards">${cards.map(p => `
+        <div class="kanban-card" onclick="openProjectModal('${p.id}')">
+          <div class="kanban-card-title">${escHtml(p.name)}</div>
+          <div class="kanban-card-client">${escHtml(p.user_profiles?.business_name || p.user_profiles?.full_name || 'Client')}</div>
+          <div class="kanban-card-meta">
+            <div style="display:flex;gap:4px;flex-wrap:wrap">
+              ${p.unread    ? `<span class="kanban-unread">${p.unread} msg</span>` : ''}
+              ${p.approvals ? `<span class="kanban-unread" style="background:var(--amber);color:#000">${p.approvals} approve</span>` : ''}
+              ${p.support   ? `<span class="kanban-unread" style="background:var(--red);color:#fff">${p.support} support</span>` : ''}
+            </div>
+          </div>
+        </div>`).join('') || '<div style="padding:12px;font-size:12px;color:var(--text-3);border:1px dashed var(--border);border-radius:8px;text-align:center">Empty</div>'}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ── Project modal ──────────────────────────────────────────────
+async function openProjectModal(projectId) {
+  openProject = allProjects.find(p => p.id === projectId);
+  if (!openProject) return;
+
+  document.getElementById('pm_title').textContent = openProject.name;
+  document.getElementById('pm_client').textContent = openProject.user_profiles?.business_name || openProject.user_profiles?.full_name || 'Client';
+
+  const clientLink = document.getElementById('pm_clientLink');
+  clientLink.href = `project.html?id=${openProject.id}`;
+  clientLink.style.display = 'flex';
+
+  document.getElementById('projectModal').classList.add('open');
+  pmTab('overview');
+}
+
+function pmTab(tab) {
+  currentPmTab = tab;
+  document.querySelectorAll('.pm-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.pmTab === tab);
+  });
+  renderPmTab(tab);
+}
+
+async function renderPmTab(tab) {
+  const content = document.getElementById('pm_tabContent');
+  content.innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+
+  switch (tab) {
+    case 'overview':  await renderOverview(content);  break;
+    case 'requests':  await renderRequests(content);  break;
+    case 'approvals': await renderApprovals(content); break;
+    case 'files':     await renderFiles(content);     break;
+    case 'messages':  await renderMessages(content);  break;
+    case 'invoices':  await renderInvoices(content);  break;
+    case 'support':   await renderSupport(content);   break;
+  }
+}
+
+// ── Overview ──────────────────────────────────────────────────
+async function renderOverview(el) {
+  const p = openProject;
+  const stageOptions = STAGES.map(s => `<option value="${s.key}" ${p.stage === s.key ? 'selected' : ''}>${s.label}</option>`).join('');
+  const { data: updates } = await db.from('project_updates').select('*').eq('project_id', p.id).order('created_at', { ascending: false }).limit(5);
+  const { data: ratings } = await db.from('stage_ratings').select('*').eq('project_id', p.id);
+
+  const ratingsHtml = ratings?.length ? ratings.map(r => {
+    const emoji = ['😞','😐','🙂','😊','🤩'][r.rating - 1] || '🙂';
+    return `<div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--bg-3);border-radius:6px;font-size:12px;margin:2px">
+      ${emoji} <strong>${getStageLabel(r.stage)}</strong>${r.comment ? ` — "${escHtml(r.comment)}"` : ''}
+    </div>`;
+  }).join('') : '';
+
+  el.innerHTML = `
+    <!-- Stage + URLs -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <div>
+        <div class="form-label">Build stage</div>
+        <div style="display:flex;gap:8px">
+          <select class="form-select" id="pm_stage" style="flex:1">${stageOptions}</select>
+          <button class="btn btn--primary btn--sm" onclick="updateStage()">Update</button>
+        </div>
+      </div>
+      <div>
+        <div class="form-label">Preview URL <span style="color:var(--text-3);text-transform:none;font-weight:400">(Netlify preview)</span></div>
+        <div style="display:flex;gap:8px">
+          <input class="form-input" id="pm_preview" placeholder="https://deploy-preview-1--site.netlify.app" value="${escHtml(p.preview_url || '')}">
+          <button class="btn btn--ghost btn--sm" onclick="savePreviewUrl()">Save</button>
+        </div>
+      </div>
+    </div>
+    ${p.website_url ? `<div style="margin-bottom:16px"><div class="form-label">Live URL</div><a href="${escHtml(p.website_url)}" target="_blank" style="color:var(--green);font-size:13px">${escHtml(p.website_url)} ↗</a></div>` : ''}
+
+    <!-- Post update -->
+    <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
+      <div class="form-label">Post a build update <span style="color:var(--text-3);text-transform:none;font-weight:400">(visible to client — paste a Loom URL to embed a video)</span></div>
+      <div style="display:flex;gap:8px">
+        <textarea class="form-textarea" id="pm_update" placeholder="What's been built, what's coming next… or paste a loom.com/share/... link to embed a video walkthrough" style="flex:1;min-height:70px"></textarea>
+        <button class="btn btn--primary btn--sm" style="align-self:flex-end;flex-shrink:0" onclick="postUpdate()">Post</button>
+      </div>
+    </div>
+
+    <!-- Past updates -->
+    <div style="margin-bottom:20px">
+      <div class="form-label" style="margin-bottom:8px">Update history</div>
+      ${updates?.length ? updates.map(u => `
+        <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:5px"></div>
+          <div style="flex:1">
+            <div style="font-size:11px;color:var(--text-3)">${formatDateTime(u.created_at)}${u.stage_at_time ? ' · ' + getStageLabel(u.stage_at_time) : ''}</div>
+            <div style="font-size:12px;margin-top:2px">${escHtml(u.message)}</div>
+          </div>
+          <button class="btn btn--ghost btn--sm" onclick="deleteUpdate('${u.id}')" style="color:var(--text-3);flex-shrink:0" title="Delete">✕</button>
+        </div>`).join('') : '<div style="font-size:12px;color:var(--text-3)">No updates posted yet.</div>'}
+    </div>
+
+    <!-- Client satisfaction ratings -->
+    ${ratingsHtml ? `<div style="margin-bottom:20px"><div class="form-label" style="margin-bottom:8px">Client satisfaction ratings</div>${ratingsHtml}</div>` : ''}
+
+    <!-- Internal notes -->
+    <div style="margin-bottom:16px">
+      <div class="form-label">Internal notes <span style="color:var(--text-3);text-transform:none;font-weight:400">(not visible to client)</span></div>
+      <div style="display:flex;gap:8px">
+        <textarea class="form-textarea" id="pm_notes" style="flex:1;min-height:50px">${escHtml(p.notes || '')}</textarea>
+        <button class="btn btn--ghost btn--sm" style="align-self:flex-end" onclick="saveNotes()">Save</button>
+      </div>
+    </div>
+
+    <div style="text-align:right"><button class="btn btn--danger btn--sm" onclick="deleteProject('${p.id}')">Delete project</button></div>`;
+}
+
+async function updateStage() {
+  const newStage = document.getElementById('pm_stage').value;
+  const wasLive = openProject.stage === 'live';
+  await db.from('projects').update({ stage: newStage }).eq('id', openProject.id);
+  openProject.stage = newStage;
+
+  // If moving to live — get client email and notify
+  if (newStage === 'live' && !wasLive) {
+    const { data: user } = await db.auth.admin?.getUserById?.(openProject.client_id).catch(() => ({ data: null })) || { data: null };
+    // Fire notification via edge function instead
+    await db.functions.invoke('notify-comment', {
+      body: { project_id: openProject.id, project_name: openProject.name, message: '🎉 Your website is now live!' }
+    }).catch(() => {});
+  }
+
+  showToast(`Stage → ${getStageLabel(newStage)}`, 'success');
+  await loadProjects();
+}
+
+async function savePreviewUrl() {
+  const url = document.getElementById('pm_preview').value.trim();
+  await db.from('projects').update({ preview_url: url || null }).eq('id', openProject.id);
+  openProject.preview_url = url;
+  showToast('Preview URL saved', 'success');
+}
+
+async function postUpdate() {
+  const msg = document.getElementById('pm_update').value.trim();
+  if (!msg) return;
+  await db.from('project_updates').insert({ project_id: openProject.id, message: msg, stage_at_time: openProject.stage, posted_by: currentUser.id });
+
+  // Get client email and notify
+  const { data: clientProfile } = await db.from('user_profiles').select('full_name').eq('id', openProject.client_id).single();
+  const { data: authUser } = await db.rpc('get_user_email_by_id', { user_id: openProject.client_id }).catch(() => ({ data: null }));
+  if (authUser) await notifyClientBuildUpdate(authUser, clientProfile?.full_name || 'there', openProject.name, msg, openProject.stage);
+
+  document.getElementById('pm_update').value = '';
+  showToast('Update posted — client notified by email.', 'success');
+  renderPmTab('overview');
+}
+
+async function deleteUpdate(id) {
+  if (!confirm('Delete this update?')) return;
+  await db.from('project_updates').delete().eq('id', id);
+  renderPmTab('overview');
+}
+
+async function saveNotes() {
+  await db.from('projects').update({ notes: document.getElementById('pm_notes').value }).eq('id', openProject.id);
+  showToast('Notes saved', 'success');
+}
+
+// ── File requests ─────────────────────────────────────────────
+async function renderRequests(el) {
+  const { data: requests } = await db.from('document_requests').select('*').eq('project_id', openProject.id).order('created_at');
+
+  el.innerHTML = `
+    <!-- New request -->
+    <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
+      <div class="form-label">Add a file request</div>
+      <div class="form-group" style="margin-bottom:8px">
+        <input class="form-input" id="req_label" placeholder="What do you need? e.g. Your logo (PNG or SVG)">
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <input class="form-input" id="req_desc" placeholder="Extra detail (optional)">
+      </div>
+      <button class="btn btn--primary btn--sm" onclick="addDocRequest()">Add request</button>
+    </div>
+
+    <!-- Existing requests -->
+    <div id="reqList">
+      ${requests?.length ? requests.map(r => `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+          <div style="width:16px;height:16px;border-radius:4px;flex-shrink:0;${r.is_completed ? 'background:var(--green-dim);border:2px solid var(--green)' : 'background:var(--bg-3);border:2px solid var(--border-2)'}"></div>
+          <div style="flex:1">
+            <div style="font-size:13px;${r.is_completed ? 'text-decoration:line-through;color:var(--text-3)' : ''}">${escHtml(r.label)}</div>
+            ${r.description ? `<div style="font-size:11px;color:var(--text-3)">${escHtml(r.description)}</div>` : ''}
+          </div>
+          <div style="font-size:11px;color:${r.is_completed ? 'var(--green)' : 'var(--text-3)'}">${r.is_completed ? 'Uploaded ✓' : 'Pending'}</div>
+          <button class="btn btn--ghost btn--sm" style="color:var(--text-3)" onclick="deleteDocRequest('${r.id}')">✕</button>
+        </div>`).join('') : '<div style="font-size:13px;color:var(--text-3)">No requests yet. Add one above to tell the client what to upload.</div>'}
+    </div>`;
+}
+
+async function addDocRequest() {
+  const label = document.getElementById('req_label').value.trim();
+  const desc  = document.getElementById('req_desc').value.trim();
+  if (!label) { showToast('Enter a label', 'error'); return; }
+  await db.from('document_requests').insert({ project_id: openProject.id, label, description: desc || null, created_by: currentUser.id });
+  showToast('Request added — client will see it on their portal.', 'success');
+  renderPmTab('requests');
+}
+
+async function deleteDocRequest(id) {
+  await db.from('document_requests').delete().eq('id', id);
+  renderPmTab('requests');
+}
+
+// ── Approvals ─────────────────────────────────────────────────
+async function renderApprovals(el) {
+  const { data: approvals } = await db.from('approvals').select('*').eq('project_id', openProject.id).order('created_at', { ascending: false });
+
+  el.innerHTML = `
+    <!-- New approval -->
+    <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
+      <div class="form-label" style="margin-bottom:8px">Request client approval</div>
+      <div class="form-group" style="margin-bottom:8px">
+        <input class="form-input" id="ap_title" placeholder="What are they approving? e.g. Homepage design">
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <textarea class="form-textarea" id="ap_desc" placeholder="What should they look at? What kind of feedback do you need?" style="min-height:60px"></textarea>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <input class="form-input" id="ap_url" placeholder="Preview URL (Figma, Netlify, etc.) — optional">
+      </div>
+      <button class="btn btn--primary btn--sm" onclick="addApproval()">Send for approval</button>
+    </div>
+
+    <!-- Existing approvals -->
+    <div>
+      ${approvals?.length ? approvals.map(a => {
+        const statusConf = { pending: ['var(--amber)', '⏳ Awaiting'], approved: ['var(--green)', '✅ Approved'], changes_requested: ['var(--text-2)', '🔄 Changes'] };
+        const [col, label] = statusConf[a.status] || statusConf.pending;
+        return `
+          <div style="padding:12px 0;border-bottom:1px solid var(--border)">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+              <div>
+                <div style="font-size:13px;font-weight:600">${escHtml(a.title)}</div>
+                ${a.description ? `<div style="font-size:11px;color:var(--text-3);margin-top:2px">${escHtml(a.description)}</div>` : ''}
+                ${a.client_notes ? `<div style="margin-top:6px;font-size:12px;padding:6px 10px;background:var(--bg-3);border-radius:6px">Client: "${escHtml(a.client_notes)}"</div>` : ''}
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+                ${a.preview_url ? `<a href="${escHtml(a.preview_url)}" target="_blank" class="btn btn--ghost btn--sm">View ↗</a>` : ''}
+                <div style="font-size:11px;font-weight:600;color:${col}">${label}</div>
+                <button class="btn btn--ghost btn--sm" style="color:var(--text-3)" onclick="deleteApproval('${a.id}')">✕</button>
+              </div>
+            </div>
+          </div>`;
+      }).join('') : '<div style="font-size:13px;color:var(--text-3)">No approval requests yet.</div>'}
+    </div>`;
+}
+
+async function addApproval() {
+  const title = document.getElementById('ap_title').value.trim();
+  const desc  = document.getElementById('ap_desc').value.trim();
+  const url   = document.getElementById('ap_url').value.trim();
+  if (!title) { showToast('Enter a title', 'error'); return; }
+
+  await db.from('approvals').insert({ project_id: openProject.id, title, description: desc || null, preview_url: url || null, created_by: currentUser.id });
+
+  // Notify client by email
+  const { data: profile } = await db.from('user_profiles').select('full_name').eq('id', openProject.client_id).single();
+  await notifyClientApproval('', profile?.full_name || 'there', openProject.name, title, url);
+
+  showToast('Approval request sent — client notified.', 'success');
+  renderPmTab('approvals');
+}
+
+async function deleteApproval(id) {
+  await db.from('approvals').delete().eq('id', id);
+  renderPmTab('approvals');
+}
+
+// ── Files ─────────────────────────────────────────────────────
+async function renderFiles(el) {
+  const { data: docs } = await db.from('documents').select('*').eq('project_id', openProject.id).order('created_at', { ascending: false });
+
+  if (!docs?.length) { el.innerHTML = `<div class="empty-state">No files uploaded by client yet.</div>`; return; }
+
+  el.innerHTML = `
+    <div style="font-size:12px;color:var(--text-3);margin-bottom:12px">${docs.length} file${docs.length !== 1 ? 's' : ''} uploaded</div>
+    <div class="doc-list">
+      ${docs.map(d => `
+        <div class="doc-item">
+          <div class="doc-icon">${fileEmoji(d.file_type)}</div>
+          <div class="doc-info">
+            <div class="doc-name">${escHtml(d.file_name)}</div>
+            <div class="doc-meta">${d.label ? escHtml(d.label) + ' · ' : ''}${formatFileSize(d.file_size)} · ${formatDate(d.created_at)}</div>
+          </div>
+          <button class="btn btn--ghost btn--sm" onclick="adminDownload('${d.file_path}','${escHtml(d.file_name)}')" title="Download">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+        </div>`).join('')}
+    </div>`;
+}
+
+async function adminDownload(path, name) {
+  const { data } = await db.storage.from('portal-documents').createSignedUrl(path, 60);
+  if (data) { const a = document.createElement('a'); a.href = data.signedUrl; a.download = name; a.click(); }
+}
+
+// ── Messages ──────────────────────────────────────────────────
+async function renderMessages(el) {
+  const { data: comments } = await db.from('comments').select('*, user_profiles(full_name, role)').eq('project_id', openProject.id).order('created_at', { ascending: true });
+
+  // Mark unread as read
+  await db.from('comments').update({ is_read: true }).eq('project_id', openProject.id).neq('user_id', currentUser.id);
+  document.getElementById('pm_msgBadge').style.display = 'none';
+
+  const threadHtml = comments?.length
+    ? comments.map(c => {
+        const isMe = c.user_id === currentUser.id;
+        const name = isMe ? 'You' : (c.user_profiles?.full_name || 'Client');
+        return `<div class="comment-bubble ${isMe ? 'comment-bubble--mine' : ''}" style="margin-bottom:8px">
+          <div class="comment-avatar" style="width:26px;height:26px;font-size:11px">${name.charAt(0).toUpperCase()}</div>
+          <div class="comment-body">
+            <div class="comment-text" style="font-size:12px">${renderMessageWithLoom(c.message)}</div>
+            <div class="comment-time">${name} · ${formatDateTime(c.created_at)}</div>
+          </div>
+        </div>`;
+      }).join('')
+    : '<div style="font-size:12px;color:var(--text-3);padding:8px">No messages yet.</div>';
+
+  el.innerHTML = `
+    <div id="pm_thread" style="max-height:300px;overflow-y:auto;margin-bottom:12px">${threadHtml}</div>
+    <div style="display:flex;gap:8px">
+      <input class="form-input" id="pm_commentInput" placeholder="Reply to client…" maxlength="500" style="font-size:13px">
+      <button class="btn btn--primary btn--sm" onclick="adminSendComment()">Send</button>
+    </div>`;
+
+  const t = document.getElementById('pm_thread');
+  if (t) t.scrollTop = t.scrollHeight;
+  document.getElementById('pm_commentInput')?.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); adminSendComment(); } });
+}
+
+async function adminSendComment() {
+  const input = document.getElementById('pm_commentInput');
+  const msg = input?.value.trim(); if (!msg) return;
+  input.value = '';
+  await db.from('comments').insert({ project_id: openProject.id, user_id: currentUser.id, message: msg, is_read: true });
+
+  // Notify client by email
+  const { data: profile } = await db.from('user_profiles').select('full_name').eq('id', openProject.client_id).single();
+  await notifyClientComment('', profile?.full_name || 'there', openProject.name, msg);
+
+  renderPmTab('messages');
+}
+
+// ── Invoices ──────────────────────────────────────────────────
+async function renderInvoices(el) {
+  const { data: invoices } = await db.from('invoices').select('*').eq('project_id', openProject.id).order('created_at', { ascending: false });
+
+  const statusOptions = ['draft','unpaid','paid','overdue'].map(s => `<option value="${s}">${s.charAt(0).toUpperCase() + s.slice(1)}</option>`).join('');
+
+  el.innerHTML = `
+    <!-- New invoice -->
+    <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
+      <div class="form-label" style="margin-bottom:10px">Create invoice</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div>
+          <div class="form-label">Title</div>
+          <input class="form-input" id="inv_title" placeholder="e.g. Initial deposit">
+        </div>
+        <div>
+          <div class="form-label">Amount (£)</div>
+          <input class="form-input" id="inv_amount" type="number" step="0.01" placeholder="0.00">
+        </div>
+        <div>
+          <div class="form-label">Status</div>
+          <select class="form-select" id="inv_status">${statusOptions}</select>
+        </div>
+        <div>
+          <div class="form-label">Due date</div>
+          <input class="form-input" id="inv_due" type="date">
+        </div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div class="form-label">Description <span style="color:var(--text-3);font-weight:400;text-transform:none">(optional)</span></div>
+        <input class="form-input" id="inv_desc" placeholder="e.g. 50% project deposit as per proposal">
+      </div>
+      <div style="margin-bottom:10px">
+        <div class="form-label">Invoice PDF link <span style="color:var(--text-3);font-weight:400;text-transform:none">(optional)</span></div>
+        <input class="form-input" id="inv_url" placeholder="https://...">
+      </div>
+      <button class="btn btn--primary btn--sm" onclick="createInvoice()">Create invoice</button>
+    </div>
+
+    <!-- Existing invoices -->
+    <div>
+      ${invoices?.length ? invoices.map(inv => {
+        const statusColor = { unpaid: 'var(--amber)', paid: 'var(--green)', overdue: 'var(--red)', draft: 'var(--text-3)' };
+        return `
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap">
+            <div>
+              <div style="font-size:13px;font-weight:600">${escHtml(inv.title)}</div>
+              <div style="font-size:11px;color:var(--text-3)">${inv.description ? escHtml(inv.description) + ' · ' : ''}${inv.due_date ? 'Due ' + formatDate(inv.due_date) : ''}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="font-size:16px;font-weight:700">£${parseFloat(inv.amount).toFixed(2)}</div>
+              <select style="background:var(--bg-3);border:1px solid var(--border-2);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;color:${statusColor[inv.status]};font-family:inherit;cursor:pointer" onchange="updateInvoiceStatus('${inv.id}', this.value)">
+                ${['draft','unpaid','paid','overdue'].map(s => `<option value="${s}" ${s === inv.status ? 'selected' : ''}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`).join('')}
+              </select>
+              <button class="btn btn--ghost btn--sm" style="color:var(--text-3)" onclick="deleteInvoice('${inv.id}')">✕</button>
+            </div>
+          </div>`;
+      }).join('') : '<div style="font-size:13px;color:var(--text-3)">No invoices yet.</div>'}
+    </div>`;
+}
+
+async function createInvoice() {
+  const title  = document.getElementById('inv_title').value.trim();
+  const amount = parseFloat(document.getElementById('inv_amount').value);
+  if (!title || isNaN(amount)) { showToast('Title and amount are required', 'error'); return; }
+
+  const { data: inv } = await db.from('invoices').insert({
+    project_id: openProject.id, title, amount,
+    description:  document.getElementById('inv_desc').value.trim() || null,
+    status:       document.getElementById('inv_status').value,
+    due_date:     document.getElementById('inv_due').value || null,
+    invoice_url:  document.getElementById('inv_url').value.trim() || null,
+  }).select().single();
+
+  // Notify client if not draft
+  if (inv && inv.status !== 'draft') {
+    const { data: profile } = await db.from('user_profiles').select('full_name').eq('id', openProject.client_id).single();
+    await notifyClientInvoice('', profile?.full_name || 'there', openProject.name, title, amount, inv.due_date);
+  }
+
+  showToast('Invoice created', 'success');
+  renderPmTab('invoices');
+}
+
+async function updateInvoiceStatus(id, status) {
+  const updates = { status };
+  if (status === 'paid') updates.paid_at = new Date().toISOString().split('T')[0];
+  await db.from('invoices').update(updates).eq('id', id);
+  showToast(`Invoice marked as ${status}`, 'success');
+}
+
+async function deleteInvoice(id) {
+  if (!confirm('Delete this invoice?')) return;
+  await db.from('invoices').delete().eq('id', id);
+  renderPmTab('invoices');
+}
+
+// ── Support requests ──────────────────────────────────────────
+async function renderSupport(el) {
+  const { data: requests } = await db.from('support_requests').select('*').eq('project_id', openProject.id).order('created_at', { ascending: false });
+  document.getElementById('pm_supportBadge').style.display = 'none';
+
+  if (!requests?.length) { el.innerHTML = `<div class="empty-state">No support requests from this client yet.</div>`; return; }
+
+  const priorityLabel = { high: '🔴 Urgent', normal: 'Normal', low: '⚫ Low' };
+  const statusOpts = ['open','in_progress','done','wont_do'].map(s => `<option value="${s}">${s.replace('_', ' ')}</option>`).join('');
+
+  el.innerHTML = requests.map(r => `
+    <div style="padding:14px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">${escHtml(r.title)}</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px">${escHtml(r.description)}</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">${formatDate(r.created_at)} · ${priorityLabel[r.priority] || 'Normal'}</div>
+          ${r.admin_notes ? `<div style="margin-top:6px;font-size:12px;padding:6px 10px;background:var(--bg-3);border-radius:6px">Your notes: ${escHtml(r.admin_notes)}</div>` : ''}
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+          <select style="background:var(--bg-3);border:1px solid var(--border-2);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit;cursor:pointer;color:var(--text)" onchange="updateSupportStatus('${r.id}', this.value)">
+            ${['open','in_progress','done','wont_do'].map(s => `<option value="${s}" ${s === r.status ? 'selected' : ''}>${s === 'wont_do' ? "Won't do" : s.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <!-- Admin notes -->
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input class="form-input" placeholder="Add internal note for client…" id="sn_${r.id}" value="${escHtml(r.admin_notes || '')}" style="font-size:12px">
+        <button class="btn btn--ghost btn--sm" onclick="saveSupportNote('${r.id}')">Save</button>
+      </div>
+    </div>`).join('');
+}
+
+async function updateSupportStatus(id, status) {
+  await db.from('support_requests').update({ status }).eq('id', id);
+  showToast('Status updated', 'success');
+}
+
+async function saveSupportNote(id) {
+  const notes = document.getElementById(`sn_${id}`)?.value.trim();
+  await db.from('support_requests').update({ admin_notes: notes || null }).eq('id', id);
+  showToast('Note saved', 'success');
+}
+
+// ── Delete project ────────────────────────────────────────────
+async function deleteProject(id) {
+  if (!confirm('Delete this project and ALL its data? This cannot be undone.')) return;
+  await db.from('projects').delete().eq('id', id);
+  closeModal('projectModal');
+  showToast('Project deleted', 'success');
+  await loadProjects();
+}
+
+// ── New Project form ──────────────────────────────────────────
+document.getElementById('newProjectForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('createProjectBtn');
+  btn.disabled = true; btn.textContent = 'Creating…';
+
+  const email = document.getElementById('np_email').value.trim();
+  const { data: userId, error: userErr } = await db.rpc('get_user_id_by_email', { email_address: email });
+
+  if (userErr || !userId) {
+    showToast('No account found for that email. Invite them via Supabase first.', 'error');
+    btn.disabled = false; btn.textContent = 'Create project';
+    return;
+  }
+
+  const { error } = await db.from('projects').insert({
+    client_id:   userId,
+    name:        document.getElementById('np_name').value.trim(),
+    description: document.getElementById('np_desc').value.trim() || null,
+    stage:       document.getElementById('np_stage').value,
+    notes:       document.getElementById('np_notes').value.trim() || null,
+  });
+
+  if (error) { showToast(error.message, 'error'); }
+  else { showToast('Project created!', 'success'); closeModal('newProjectModal'); document.getElementById('newProjectForm').reset(); await loadProjects(); }
+
+  btn.disabled = false; btn.textContent = 'Create project';
+});
+
+// ── Helpers ───────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+document.getElementById('mobileMenuBtn').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
+
+init();
+</script>
+</body>
+</html>

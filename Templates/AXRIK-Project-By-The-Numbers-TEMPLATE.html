@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!--
+  AXRIK "Project by the Numbers" — reusable client wrap-up template.
+  Hand this to a client at go-live to show effort vs. output in one page.
+  Replace every {{PLACEHOLDER}}. Delete stat tiles you don't need (keep the grid to 4 across).
+  Worked example: Templates/JG-Foods-Project-By-The-Numbers.html
+-->
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AXRIK — {{CLIENT}}: Project by the Numbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root{ --dark:#0d1726; --dark-2:#111f33; --green:#15a36a; --green-soft:rgba(21,163,106,.12);
+    --green-border:rgba(21,163,106,.28); --white:#fff; --off:#f7f8fa; --line:#e2e6eb;
+    --text:#1c2635; --text-soft:#5a6a7a; --font:'Inter',-apple-system,sans-serif; --serif:'DM Serif Display',Georgia,serif; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--font);color:var(--text);background:var(--off);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .sheet{max-width:880px;margin:0 auto;background:#fff;box-shadow:0 20px 60px -30px rgba(13,23,38,.5)}
+  .top{background:var(--dark);padding:0}
+  .topbar{padding:14px 48px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.06)}
+  .wordmark{font-size:20px;font-weight:800;letter-spacing:.38em;padding-left:.38em;color:#fff;text-transform:uppercase}
+  .wordmark .x{color:var(--green)}
+  .topbar .r{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase}
+  .head{padding:54px 48px 56px}
+  .pill{display:inline-flex;align-items:center;gap:8px;background:var(--green-soft);border:1px solid var(--green-border);border-radius:20px;padding:5px 14px;margin-bottom:22px}
+  .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+  .pill span{font-size:12px;font-weight:600;color:var(--green)}
+  .head h1{font-family:var(--serif);color:#fff;font-size:40px;font-weight:400;line-height:1.1;letter-spacing:-.01em}
+  .head h1 em{font-style:normal;color:var(--green)}
+  .head p{color:rgba(255,255,255,.66);font-size:15px;margin-top:16px;max-width:620px}
+  .green-rule{height:3px;background:var(--green);border:none}
+  .body{padding:44px 48px 52px}
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:8px}
+  .stat{background:var(--off);border:1px solid var(--line);border-radius:12px;padding:18px 16px;text-align:center}
+  .stat b{display:block;font-family:var(--serif);font-size:30px;color:var(--dark);line-height:1}
+  .stat span{display:block;font-size:11.5px;color:var(--text-soft);margin-top:8px;font-weight:600}
+  h2{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin:38px 0 14px}
+  .row{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .row .l{flex:0 0 230px;font-weight:700;color:var(--dark);font-size:14px}
+  .row .d{flex:1;color:var(--text-soft);font-size:13.5px}
+  .deliver{display:grid;grid-template-columns:1fr 1fr;gap:10px 26px;margin-top:4px}
+  .deliver div{font-size:13.5px;color:var(--text);padding:6px 0;border-bottom:1px solid var(--line)}
+  .deliver b{color:var(--dark)}
+  .value{background:var(--dark);border-radius:14px;padding:26px 28px;margin-top:34px}
+  .value h3{font-family:var(--serif);color:#fff;font-size:21px;font-weight:400;margin-bottom:8px}
+  .value h3 em{font-style:normal;color:var(--green)}
+  .value p{color:rgba(255,255,255,.72);font-size:14px}
+  .value p + p{margin-top:10px}
+  .foot{padding:20px 48px 30px;border-top:1px solid var(--line);color:var(--text-soft);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .note{font-size:11.5px;color:#9aa5b4;margin-top:14px;font-style:italic}
+  @media print{body{background:#fff}.sheet{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="top">
+    <div class="topbar"><div class="wordmark">A<span class="x">X</span>RIK</div><div class="r">Web App Development · Project Summary</div></div>
+    <div class="head">
+      <div class="pill"><span class="dot"></span><span>{{CLIENT}} · Project by the numbers</span></div>
+      <h1>{{HEADLINE_LINE_1}}<br>{{HEADLINE_LINE_2}} <em>{{HEADLINE_EMPHASIS}}</em></h1>
+      <p>{{INTRO_SENTENCE — what was built, for whom, over what period}}</p>
+    </div>
+    <hr class="green-rule">
+  </div>
+
+  <div class="body">
+    <div class="stat-grid">
+      <div class="stat"><b>{{N}}</b><span>HANDS-ON BUILD HOURS</span></div>
+      <div class="stat"><b>{{N}}</b><span>WEEKS, END TO END</span></div>
+      <div class="stat"><b>{{N}}</b><span>FOCUSED BUILD SESSIONS</span></div>
+      <div class="stat"><b>{{N}}</b><span>APPS DELIVERED</span></div>
+    </div>
+    <div class="stat-grid" style="margin-top:14px">
+      <div class="stat"><b>{{N}}</b><span>DATABASE MIGRATIONS</span></div>
+      <div class="stat"><b>{{N}}</b><span>SERVERLESS FUNCTIONS</span></div>
+      <div class="stat"><b>{{N}}</b><span>LIVE AI FEATURES</span></div>
+      <div class="stat"><b>£{{N}}</b><span>MONTHLY RUNNING COST*</span></div>
+    </div>
+
+    <h2>How the time broke down</h2>
+    <div class="row"><div class="l">{{PHASE_1_NAME}}</div><div class="d">{{PHASE_1_DESC}} (~{{N}}h)</div></div>
+    <div class="row"><div class="l">{{PHASE_2_NAME}}</div><div class="d">{{PHASE_2_DESC}} (~{{N}}h)</div></div>
+    <div class="row"><div class="l">{{PHASE_3_NAME}}</div><div class="d">{{PHASE_3_DESC}} (~{{N}}h)</div></div>
+    <div class="row"><div class="l">{{PHASE_4_NAME}}</div><div class="d">{{PHASE_4_DESC}} (~{{N}}h)</div></div>
+    <div class="row"><div class="l">{{PHASE_5_NAME}}</div><div class="d">{{PHASE_5_DESC}} (~{{N}}h)</div></div>
+
+    <h2>What was delivered</h2>
+    <div class="deliver">
+      <div><b>{{DELIVERABLE}}</b> — {{detail}}</div>
+      <div><b>{{DELIVERABLE}}</b> — {{detail}}</div>
+      <div><b>{{DELIVERABLE}}</b> — {{detail}}</div>
+      <div><b>{{DELIVERABLE}}</b> — {{detail}}</div>
+      <div><b>{{DELIVERABLE}}</b> — {{detail}}</div>
+      <div><b>{{DELIVERABLE}}</b> — {{detail}}</div>
+      <div><b>{{DELIVERABLE}}</b> — {{detail}}</div>
+      <div><b>{{DELIVERABLE}}</b> — {{detail}}</div>
+      <div><b>{{DELIVERABLE}}</b> — {{detail}}</div>
+      <div><b>{{DELIVERABLE}}</b> — {{detail}}</div>
+    </div>
+
+    <div class="value">
+      <h3>The <em>real</em> headline</h3>
+      <p>{{VALUE_PARA_1 — frame the scope as a multi-week, five-figure agency build}}</p>
+      <p>Delivered in roughly {{N}} focused hours. That gap between effort and output — made possible by an AI-accelerated workflow — is the AXRIK proposition in one line: agency-grade software, for niche businesses, at a fraction of the time and cost.</p>
+    </div>
+
+    <p class="note">* {{COST_FOOTNOTE — name the free stack, note that hours are an informed estimate from session log + commit history}}</p>
+  </div>
+
+  <div class="foot"><span>AXRIK · Web App Development</span><span>{{CLIENT}} · {{PROJECT_LABEL}} · phil@axrik.com</span></div>
+</div>
+</body>
+</html>

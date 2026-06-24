@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing — AXRIK</title>
+  <meta name="description" content="Clear, fixed-price packages for custom websites and web apps — agency-grade software without the agency price. Guide prices, confirmed in writing before any work begins.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0a0a0a">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://axrik.com/pricing.html">
+  <meta property="og:title" content="Pricing — AXRIK">
+  <meta property="og:description" content="Clear, fixed-price packages for custom websites and web apps — agency-grade software without the agency price.">
+  <meta property="og:image" content="https://axrik.com/assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pricing — AXRIK">
+  <meta name="twitter:description" content="Clear, fixed-price packages for custom websites and web apps — agency-grade software without the agency price.">
+
+  <style>
+    /* ── Pricing-page specific ─────────────────────────── */
+    .price-note-bar {
+      display: flex; flex-wrap: wrap; gap: 14px 28px;
+      margin-top: 28px;
+    }
+    .price-note-bar .pn {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 13.5px; color: var(--text-2);
+    }
+    .price-note-bar .pn svg { color: var(--green); flex-shrink: 0; }
+
+    .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .tier {
+      background: var(--bg-1); border: 1px solid var(--border);
+      border-radius: 16px; padding: 30px 28px;
+      display: flex; flex-direction: column; position: relative;
+      transition: border-color .25s ease, transform .25s ease;
+    }
+    .tier:hover { border-color: rgba(37,163,112,0.28); transform: translateY(-3px); }
+    .tier.flag { border: 1.5px solid var(--green); box-shadow: 0 24px 60px -36px rgba(37,163,112,0.6); }
+    .tier.flag .flagtag {
+      position: absolute; top: -12px; left: 28px;
+      background: var(--green); color: var(--bg);
+      font-size: 10.5px; font-weight: 700; letter-spacing: .07em;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 20px;
+    }
+    .tier .tname { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); }
+    .tier .who { font-size: 13px; color: var(--text-2); margin-top: 8px; min-height: 54px; line-height: 1.55; }
+    .tier .price {
+      font-family: 'Syne', sans-serif; font-size: 34px; font-weight: 700;
+      color: var(--text); line-height: 1; margin: 18px 0 20px;
+    }
+    .tier .price small { display: block; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: var(--text-3); margin-bottom: 4px; letter-spacing: .04em; }
+    .tier ul { border-top: 1px solid var(--border); padding-top: 18px; margin: 0 0 0; flex: 1; }
+    .tier li { font-size: 13.5px; color: var(--text); padding: 6px 0 6px 26px; position: relative; line-height: 1.5; }
+    .tier li::before {
+      content: ""; position: absolute; left: 2px; top: 9px;
+      width: 11px; height: 7px; border-left: 2px solid var(--green);
+      border-bottom: 2px solid var(--green); transform: rotate(-45deg);
+    }
+    .tier .meta { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-3); }
+    .tier .meta b { color: var(--text-2); font-weight: 600; }
+    .tier .btn { margin-top: 22px; justify-content: center; }
+
+    /* Takeover */
+    .takeover {
+      margin-top: 22px; background: var(--bg-1); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 34px;
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; align-items: center;
+    }
+    .takeover h3 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .takeover h3 em { font-style: normal; color: var(--green); }
+    .takeover .tk-price { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; color: var(--text); margin: 12px 0 2px; }
+    .takeover .tk-price small { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: var(--text-3); }
+    .takeover p { font-size: 13.5px; color: var(--text-2); margin-top: 10px; line-height: 1.6; }
+    .takeover ul { margin: 0; }
+    .takeover li { font-size: 13.5px; color: var(--text); padding: 7px 0 7px 26px; position: relative; line-height: 1.5; }
+    .takeover li::before {
+      content: ""; position: absolute; left: 2px; top: 11px;
+      width: 11px; height: 7px; border-left: 2px solid var(--green);
+      border-bottom: 2px solid var(--green); transform: rotate(-45deg);
+    }
+
+    /* Care plans */
+    .care { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .cp { background: var(--bg-1); border: 1px solid var(--border); border-radius: 14px; padding: 26px 24px; }
+    .cp .cn { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--green); }
+    .cp .cpr { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; color: var(--text); margin: 8px 0 12px; }
+    .cp .cpr small { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-3); }
+    .cp p { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+    /* Add-ons */
+    .addons { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
+    .addons .ao { display: flex; justify-content: space-between; gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text); }
+    .addons .ao b { color: var(--green); font-weight: 600; white-space: nowrap; }
+
+    /* Value block */
+    .value-box { background: linear-gradient(135deg, var(--bg-1), var(--bg-2)); border: 1px solid var(--border); border-radius: 16px; padding: 40px 42px; }
+    .value-box h3 { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+    .value-box h3 em { font-style: normal; color: var(--green); }
+    .value-box p { font-size: 15px; color: var(--text-2); line-height: 1.75; max-width: 760px; }
+    .value-box p + p { margin-top: 16px; }
+
+    .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 28px; }
+    .terms .tbox { background: var(--bg-1); border: 1px solid var(--border); border-left: 2px solid var(--green); border-radius: 10px; padding: 22px 24px; }
+    .terms .tbox h4 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .terms .tbox p { font-size: 13.5px; color: var(--text-2); line-height: 1.65; }
+    .terms .tbox a { color: var(--green); }
+
+    .fineprint { font-size: 12.5px; color: var(--text-3); margin-top: 30px; font-style: italic; text-align: center; }
+
+    .sec-head { margin-bottom: 36px; }
+    .sec-head h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 700; }
+    .sec-head p { font-size: 14.5px; color: var(--text-2); margin-top: 10px; max-width: 620px; }
+
+    @media (max-width: 860px) {
+      .tiers, .care { grid-template-columns: 1fr; }
+      .takeover, .addons, .terms { grid-template-columns: 1fr; }
+      .takeover { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ────────────────────────────────────────────── -->
+  <nav class="nav scrolled" id="nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">
+        <img src="assets/axrik-logo-transparent.png" alt="AXRIK">
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="services.html">What we do</a></li>
+        <li><a href="work.html">Recent builds</a></li>
+        <li><a href="pricing.html" class="active">Pricing</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="portal/login.html">Client portal</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Get in touch</a></li>
+      </ul>
+      <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── PAGE HERO ──────────────────────────────────────── -->
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow reveal">Pricing</p>
+      <h1 class="display reveal reveal-delay-1" style="max-width:760px;">
+        Agency-grade software,<br><em>without the agency price.</em>
+      </h1>
+      <p class="hero-sub reveal reveal-delay-2" style="margin-top:24px; margin-bottom:0; max-width:660px; font-size:17px; color:var(--text-2);">
+        Clear, fixed-price packages with a written scope, plus a simple monthly care plan so everything keeps running. No hourly billing, no surprise invoices — you'll know the price before any work begins.
+      </p>
+      <div class="price-note-bar reveal reveal-delay-3">
+        <span class="pn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Fixed price, agreed up front</span>
+        <span class="pn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Written scope before any work</span>
+        <span class="pn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> No hidden costs</span>
+        <span class="pn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> No VAT to add</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BUILD PACKAGES ─────────────────────────────────── -->
+  <section class="section" style="padding-top:24px;">
+    <div class="container">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Build packages</p>
+        <h2 class="headline">A one-off project fee, agreed up front.</h2>
+        <p>Every package <em style="font-style:normal;color:var(--text);">starts from</em> the price shown and is confirmed against your written scope. Where your project lands depends on what you need — so the best next step is a quick conversation.</p>
+      </div>
+
+      <div class="tiers">
+        <!-- Starter -->
+        <div class="tier reveal">
+          <div class="tname">Starter</div>
+          <p class="who">A polished, professional presence for a business that needs to be found and trusted online.</p>
+          <div class="price"><small>FROM</small>£1,200</div>
+          <ul>
+            <li>Responsive marketing website (up to ~5 pages)</li>
+            <li>Mobile-first, fast, modern design</li>
+            <li>Contact / enquiry form, emailed to you</li>
+            <li>Search engine &amp; Google basics set up</li>
+            <li>Domain &amp; hosting configured for you</li>
+          </ul>
+          <div class="meta"><b>Timescale:</b> around 1 week &nbsp;·&nbsp; <b>Pairs with:</b> Essential care</div>
+          <a href="index.html#contact" class="btn btn-outline">Enquire</a>
+        </div>
+
+        <!-- Standard -->
+        <div class="tier reveal reveal-delay-1">
+          <div class="tname">Standard</div>
+          <p class="who">A website that does a job — taking orders, bookings or enquiries, with a simple admin behind it.</p>
+          <div class="price"><small>FROM</small>£3,000</div>
+          <ul>
+            <li>Everything in Starter</li>
+            <li>Online ordering or booking, end-to-end</li>
+            <li>Simple admin dashboard to manage it</li>
+            <li>Customer records &amp; enquiry inbox</li>
+            <li>Scheduling / delivery or appointment slots</li>
+            <li>One AI helper (e.g. social post drafts)</li>
+          </ul>
+          <div class="meta"><b>Timescale:</b> around 2 weeks &nbsp;·&nbsp; <b>Pairs with:</b> Growth care</div>
+          <a href="index.html#contact" class="btn btn-outline">Enquire</a>
+        </div>
+
+        <!-- Custom -->
+        <div class="tier flag reveal reveal-delay-2">
+          <span class="flagtag">Most complete</span>
+          <div class="tname">Custom</div>
+          <p class="who">A bespoke web app built around how your business actually runs, day to day.</p>
+          <div class="price"><small>FROM</small>£4,500</div>
+          <ul>
+            <li>Everything in Standard</li>
+            <li>Full custom admin app (multiple sections)</li>
+            <li>Secure database &amp; role-based access</li>
+            <li>Auto-invoicing — branded PDF, WhatsApp/email</li>
+            <li>Finance suite &amp; spreadsheet import</li>
+            <li>Multiple live AI features</li>
+            <li>Payments-ready foundation</li>
+            <li>Full handover pack &amp; training</li>
+          </ul>
+          <div class="meta"><b>Timescale:</b> around 3–4 weeks &nbsp;·&nbsp; <b>Pairs with:</b> Partner care</div>
+          <p class="meta" style="border-top:none; padding-top:8px; margin-top:0;"><b>What changes the price:</b> the number of admin sections, extra AI features, payments and how custom the build is. We'll confirm yours in a written quote.</p>
+          <a href="index.html#contact" class="btn btn-primary">Enquire</a>
+        </div>
+      </div>
+
+      <!-- Takeover -->
+      <div class="takeover reveal">
+        <div>
+          <h3>Already have a website? <em>We'll take it on.</em></h3>
+          <p>If your site was built elsewhere, we can take it over, look after it and improve it over time — no rebuild needed.</p>
+          <div class="tk-price">from £350 <small>one-off onboarding</small></div>
+          <p style="margin-top:6px;">Then a monthly care plan of your choice. If you later decide on a full rebuild, your onboarding fee comes off the build price.</p>
+        </div>
+        <ul>
+          <li>Full review of your current site &amp; setup</li>
+          <li>Secure handover of access &amp; accounts</li>
+          <li>Any urgent fixes sorted on day one</li>
+          <li>Brought into our managed hosting &amp; monitoring</li>
+          <li>Ongoing changes handled by your care plan</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CARE PLANS ─────────────────────────────────────── -->
+  <section class="section" style="background:var(--bg-1); padding-top:80px; padding-bottom:80px;">
+    <div class="container">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Care plans</p>
+        <h2 class="headline">Looked after, every month.</h2>
+        <p>A simple monthly plan that keeps your site secure, backed up and running. Begins at handover, rolling monthly, cancel anytime.</p>
+      </div>
+      <div class="care">
+        <div class="cp reveal">
+          <div class="cn">Essential</div>
+          <div class="cpr">£45<small> /mo</small></div>
+          <p>Hosting managed, security &amp; backups, uptime monitoring, and up to 30 minutes of small changes each month.</p>
+        </div>
+        <div class="cp reveal reveal-delay-1">
+          <div class="cn">Growth</div>
+          <div class="cpr">£95<small> /mo</small></div>
+          <p>Everything in Essential, plus up to 1 hour of changes each month, priority support and AI running costs covered.</p>
+        </div>
+        <div class="cp reveal reveal-delay-2">
+          <div class="cn">Partner</div>
+          <div class="cpr">£175<small> /mo</small></div>
+          <p>Everything in Growth, plus up to 2.5 hours of changes, fast turnaround and a quarterly review of what's next.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ADD-ONS ────────────────────────────────────────── -->
+  <section class="section" style="padding-top:80px; padding-bottom:80px;">
+    <div class="container">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Optional add-ons</p>
+        <h2 class="headline">Add what you need, when you need it.</h2>
+      </div>
+      <div class="addons reveal reveal-delay-1">
+        <div class="ao"><span>Online card payments (Stripe)</span><b>from £600</b></div>
+        <div class="ao"><span>Extra AI feature</span><b>from £450</b></div>
+        <div class="ao"><span>Additional admin section</span><b>from £500</b></div>
+        <div class="ao"><span>Copywriting / content</span><b>from £300</b></div>
+        <div class="ao"><span>Logo &amp; brand basics</span><b>from £350</b></div>
+        <div class="ao"><span>Faster delivery</span><b>+25%</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── VALUE + HOW PRICING WORKS ──────────────────────── -->
+  <section class="section" style="background:var(--bg-1); padding-top:80px; padding-bottom:80px;">
+    <div class="container">
+      <div class="value-box reveal">
+        <h3>Why it costs a <em>fraction</em> of an agency.</h3>
+        <p>The same scope — a custom web app, customer site, database, live AI and a payments-ready foundation — is usually a multi-week, five-figure agency project. In the UK, custom web apps typically start at £10,000.</p>
+        <p>An AI-accelerated way of working lets AXRIK deliver that in a fraction of the time, and that saving is passed straight to you. The same software, for a much smaller invoice.</p>
+      </div>
+
+      <div class="terms">
+        <div class="tbox reveal">
+          <h4>How pricing works</h4>
+          <p>Every package starts from the guide price shown and is confirmed in a written quote against an agreed scope before any work begins. You pay 50% to start and 50% on go-live. If the scope changes, we agree the change — and any cost — with you in writing first, so there are never any surprises.</p>
+        </div>
+        <div class="tbox reveal reveal-delay-1">
+          <h4>Our promise</h4>
+          <p>These are AXRIK's official guide prices. All AXRIK work is quoted from this guide. If you're ever offered something different, please check with us directly at <a href="mailto:phil@axrik.com">phil@axrik.com</a>.</p>
+        </div>
+      </div>
+
+      <p class="fineprint reveal">Guide prices to help you plan. Final quote confirmed in writing per project. No VAT — the price you're quoted is the price you pay.</p>
+    </div>
+  </section>
+
+  <!-- ── CTA ────────────────────────────────────────────── -->
+  <div class="cta-banner">
+    <div class="container">
+      <h2 class="reveal">Not sure which package fits?</h2>
+      <p class="reveal reveal-delay-1">Tell us how your business runs and what you'd like to change. We'll come back within one working day with a clear recommendation and a fixed quote.</p>
+      <a href="index.html#contact" class="btn btn-primary btn-arrow reveal reveal-delay-2">Get in touch</a>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ─────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="assets/axrik-logo-transparent.png" alt="AXRIK">
+          <p>Custom web apps &amp; websites for growing businesses — with AI built in from the start.</p>
+        </div>
+        <div class="footer-links-group">
+          <div class="footer-links-title">Pages</div>
+          <a href="index.html">Home</a>
+          <a href="services.html">What we do</a>
+          <a href="work.html">Recent builds</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="about.html">About</a>
+          <a href="index.html#contact">Get in touch</a>
+        </div>
+        <div class="footer-links-group">
+          <div class="footer-links-title">Contact</div>
+          <a href="mailto:phil@axrik.com">phil@axrik.com</a>
+          <a href="https://axrik.com">axrik.com</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 AXRIK. All rights reserved.</p>
+        <p>Built by <a href="about.html">Phil Munro</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
