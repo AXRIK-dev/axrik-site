@@ -120,6 +120,27 @@
     .sec-head h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 700; }
     .sec-head p { font-size: 15.5px; color: var(--text-2); margin-top: 10px; max-width: 620px; }
 
+    /* FAQ */
+    .faq { max-width: 780px; }
+    .faq details {
+      background: var(--bg-1); border: 1px solid var(--border);
+      border-radius: 12px; padding: 0 24px; margin-bottom: 12px;
+    }
+    .faq details[open] { border-color: rgba(47,191,133,0.35); }
+    .faq summary {
+      cursor: pointer; list-style: none; position: relative;
+      font-family: 'Syne', sans-serif; font-size: 16.5px; font-weight: 700;
+      color: var(--text); padding: 18px 36px 18px 0;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after {
+      content: "+"; position: absolute; right: 2px; top: 50%;
+      transform: translateY(-50%); color: var(--green);
+      font-size: 22px; font-weight: 400; transition: transform .2s ease;
+    }
+    .faq details[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+    .faq details p { font-size: 15px; color: var(--text-2); line-height: 1.7; padding: 0 0 20px; }
+
     /* Currency toggle */
     .cur-toggle {
       display: inline-flex; align-items: center; gap: 0;
@@ -352,6 +373,50 @@
     </div>
   </section>
 
+  <!-- ── FAQ ────────────────────────────────────────────── -->
+  <section class="section" style="padding-top:80px; padding-bottom:80px;">
+    <div class="container">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Common questions</p>
+        <h2 class="headline">Things people ask before getting in touch.</h2>
+      </div>
+      <div class="faq reveal reveal-delay-1">
+        <details>
+          <summary>How much will it actually cost me?</summary>
+          <p>The guide prices above are real starting points, not teaser rates. Once we've talked through what you need, you get a fixed quote in writing — and that's the number you pay. 50% to start, 50% on go-live, and no VAT to add on top.</p>
+        </details>
+        <details>
+          <summary>How long does a build take?</summary>
+          <p>Around a week for a Starter website, about two weeks for a Standard build, and three to four weeks for a full Custom web app. You'll see progress throughout in your own client portal, so you're never left wondering.</p>
+        </details>
+        <details>
+          <summary>I'm not technical. Is that a problem?</summary>
+          <p>Not at all — most of our clients aren't. Everything is built so you can run it from your phone, you get a full handover pack and training, and a care plan means there's always someone to call. You run your business; the system just works.</p>
+        </details>
+        <details>
+          <summary>Who owns the website and the data?</summary>
+          <p>You do. The site, the system and every bit of data in it belong to your business. There's no lock-in — if you ever wanted to move on, everything goes with you.</p>
+        </details>
+        <details>
+          <summary>What happens if something breaks?</summary>
+          <p>Every build is monitored, backed up daily and protected with point-in-time recovery — so problems are caught early and fixes don't cost you your data. On a care plan, issues are simply handled as part of your month.</p>
+        </details>
+        <details>
+          <summary>Do you cover my area?</summary>
+          <p>We work with businesses across the United Kingdom and the Republic of Ireland. Discovery, build and support all work brilliantly remotely — and pricing is available in pounds or euros, whichever suits you.</p>
+        </details>
+        <details>
+          <summary>Is the AI just a gimmick?</summary>
+          <p>No — each AI feature is chosen because it removes a real chore, like turning a messy WhatsApp order into a structured one, or drafting the week's social posts. And every AI feature has a manual fallback, so your business never depends on it to function.</p>
+        </details>
+        <details>
+          <summary>What about my customers' data?</summary>
+          <p>Customer data lives in a secure database with role-based access, encrypted connections and daily backups. We build with UK and EU data protection rules in mind from day one, not as an afterthought.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
   <!-- ── CTA ────────────────────────────────────────────── -->
   <div class="cta-banner">
     <div class="container">
@@ -367,7 +432,7 @@
       <div class="footer-inner">
         <div class="footer-brand">
           <img src="assets/axrik-logo-transparent.png" alt="AXRIK">
-          <p>Custom web apps &amp; websites for growing businesses — with AI built in from the start.</p>
+          <p>Custom web apps &amp; websites for growing businesses — with AI built in from the start. Serving the UK &amp; Republic of Ireland.</p>
         </div>
         <div class="footer-links-group">
           <div class="footer-links-title">Pages</div>
