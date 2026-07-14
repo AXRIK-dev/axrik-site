@@ -1,12 +1,15 @@
+# AXRIK site — Netlify configuration (repo root)
+# The deployable site lives in website/; functions live inside it too.
+
+[build]
+  publish = "website"
+  functions = "website/netlify/functions"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
   force = false
-
-[build]
-  publish = "."
-  functions = "netlify/functions"
 
 [[headers]]
   for = "/*"
