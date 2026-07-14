@@ -149,25 +149,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if (error) throw error;
 
-        // 2) Best-effort email to phil@axrik.com via FormSubmit — never block success on this.
-        if (typeof ENQUIRY_NOTIFY_EMAIL !== 'undefined' && ENQUIRY_NOTIFY_EMAIL) {
-          try {
-            await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(ENQUIRY_NOTIFY_EMAIL)}`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-              body: JSON.stringify({
-                _subject: `New AXRIK enquiry from ${name}`,
-                _template: 'table',
-                _captcha: 'false',
-                name,
-                email,
-                business: business || '—',
-                message
-              })
-            });
-          } catch (mailErr) {
-            console.warn('Enquiry saved, but email alert failed (non-critical):', mailErr);
+        // 2) Best-effort email alert via our Netlify function (Resend) —
+        //    never block success on this; the enquiry is already saved.
+        try {
+          const mailRes = await fetch('/.netlify/functions/notify-enquiry', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, business, email, message })
+          });
+          if (!mailRes.ok) {
+            console.warn('Enquiry saved, but email alert failed (non-critical):', mailRes.status);
           }
+        } catch (mailErr) {
+          console.warn('Enquiry saved, but email alert failed (non-critical):', mailErr);
         }
 
         form.style.display = 'none';
