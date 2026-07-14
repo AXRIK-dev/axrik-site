@@ -120,6 +120,21 @@
     .sec-head h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 700; }
     .sec-head p { font-size: 14.5px; color: var(--text-2); margin-top: 10px; max-width: 620px; }
 
+    /* Currency toggle */
+    .cur-toggle {
+      display: inline-flex; align-items: center; gap: 0;
+      margin-top: 26px; border: 1px solid var(--border);
+      border-radius: 30px; padding: 4px; background: var(--bg-1);
+    }
+    .cur-toggle button {
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+      letter-spacing: .03em; color: var(--text-2);
+      background: none; border: none; cursor: pointer;
+      padding: 7px 18px; border-radius: 24px;
+      transition: background .2s ease, color .2s ease;
+    }
+    .cur-toggle button.on { background: var(--green); color: var(--bg); }
+
     @media (max-width: 860px) {
       .tiers, .care { grid-template-columns: 1fr; }
       .takeover, .addons, .terms { grid-template-columns: 1fr; }
@@ -165,6 +180,10 @@
         <span class="pn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> No hidden costs</span>
         <span class="pn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> No VAT to add</span>
       </div>
+      <div class="cur-toggle reveal reveal-delay-3" role="group" aria-label="Currency">
+        <button type="button" id="curGbp" class="on" aria-pressed="true">£ GBP</button>
+        <button type="button" id="curEur" aria-pressed="false">€ EUR</button>
+      </div>
     </div>
   </section>
 
@@ -182,7 +201,7 @@
         <div class="tier reveal">
           <div class="tname">Starter</div>
           <p class="who">A polished, professional presence for a business that needs to be found and trusted online.</p>
-          <div class="price"><small>FROM</small>£1,200</div>
+          <div class="price"><small>FROM</small><span data-gbp="£1,200" data-eur="€1,400">£1,200</span></div>
           <ul>
             <li>Responsive marketing website (up to ~5 pages)</li>
             <li>Mobile-first, fast, modern design</li>
@@ -198,7 +217,7 @@
         <div class="tier reveal reveal-delay-1">
           <div class="tname">Standard</div>
           <p class="who">A website that does a job — taking orders, bookings or enquiries, with a simple admin behind it.</p>
-          <div class="price"><small>FROM</small>£3,000</div>
+          <div class="price"><small>FROM</small><span data-gbp="£3,000" data-eur="€3,500">£3,000</span></div>
           <ul>
             <li>Everything in Starter</li>
             <li>Online ordering or booking, end-to-end</li>
@@ -216,7 +235,7 @@
           <span class="flagtag">Most complete</span>
           <div class="tname">Custom</div>
           <p class="who">A bespoke web app built around how your business actually runs, day to day.</p>
-          <div class="price"><small>FROM</small>£4,500</div>
+          <div class="price"><small>FROM</small><span data-gbp="£4,500" data-eur="€5,250">£4,500</span></div>
           <ul>
             <li>Everything in Standard</li>
             <li>Full custom admin app (multiple sections)</li>
@@ -238,7 +257,7 @@
         <div>
           <h3>Already have a website? <em>We'll take it on.</em></h3>
           <p>If your site was built elsewhere, we can take it over, look after it and improve it over time — no rebuild needed.</p>
-          <div class="tk-price">from £350 <small>one-off onboarding</small></div>
+          <div class="tk-price">from <span data-gbp="£350" data-eur="€400">£350</span> <small>one-off onboarding</small></div>
           <p style="margin-top:6px;">Then a monthly care plan of your choice. If you later decide on a full rebuild, your onboarding fee comes off the build price.</p>
         </div>
         <ul>
@@ -263,17 +282,17 @@
       <div class="care">
         <div class="cp reveal">
           <div class="cn">Essential</div>
-          <div class="cpr">£45<small> /mo</small></div>
+          <div class="cpr"><span data-gbp="£45" data-eur="€55">£45</span><small> /mo</small></div>
           <p>Hosting managed, security &amp; backups, uptime monitoring, and up to 30 minutes of small changes each month.</p>
         </div>
         <div class="cp reveal reveal-delay-1">
           <div class="cn">Growth</div>
-          <div class="cpr">£95<small> /mo</small></div>
+          <div class="cpr"><span data-gbp="£95" data-eur="€110">£95</span><small> /mo</small></div>
           <p>Everything in Essential, plus up to 1 hour of changes each month, priority support and AI running costs covered.</p>
         </div>
         <div class="cp reveal reveal-delay-2">
           <div class="cn">Partner</div>
-          <div class="cpr">£175<small> /mo</small></div>
+          <div class="cpr"><span data-gbp="£175" data-eur="€200">£175</span><small> /mo</small></div>
           <p>Everything in Growth, plus up to 2.5 hours of changes, fast turnaround and a quarterly review of what's next.</p>
         </div>
       </div>
@@ -288,11 +307,11 @@
         <h2 class="headline">Add what you need, when you need it.</h2>
       </div>
       <div class="addons reveal reveal-delay-1">
-        <div class="ao"><span>Online card payments (Stripe)</span><b>from £600</b></div>
-        <div class="ao"><span>Extra AI feature</span><b>from £450</b></div>
-        <div class="ao"><span>Additional admin section</span><b>from £500</b></div>
-        <div class="ao"><span>Copywriting / content</span><b>from £300</b></div>
-        <div class="ao"><span>Logo &amp; brand basics</span><b>from £350</b></div>
+        <div class="ao"><span>Online card payments (Stripe)</span><b>from <span data-gbp="£600" data-eur="€700">£600</span></b></div>
+        <div class="ao"><span>Extra AI feature</span><b>from <span data-gbp="£450" data-eur="€525">£450</span></b></div>
+        <div class="ao"><span>Additional admin section</span><b>from <span data-gbp="£500" data-eur="€575">£500</span></b></div>
+        <div class="ao"><span>Copywriting / content</span><b>from <span data-gbp="£300" data-eur="€350">£300</span></b></div>
+        <div class="ao"><span>Logo &amp; brand basics</span><b>from <span data-gbp="£350" data-eur="€400">£350</span></b></div>
         <div class="ao"><span>Faster delivery</span><b>+25%</b></div>
       </div>
     </div>
@@ -303,7 +322,7 @@
     <div class="container">
       <div class="value-box reveal">
         <h3>Why it costs a <em>fraction</em> of an agency.</h3>
-        <p>The same scope — a custom web app, customer site, database, live AI and a payments-ready foundation — is usually a multi-week, five-figure agency project. In the UK, custom web apps typically start at £10,000.</p>
+        <p>The same scope — a custom web app, customer site, database, live AI and a payments-ready foundation — is usually a multi-week, five-figure agency project. <span data-gbp="In the UK, custom web apps typically start at £10,000." data-eur="In Ireland, custom web apps typically start at €11,500.">In the UK, custom web apps typically start at £10,000.</span></p>
         <p>An AI-accelerated way of working lets AXRIK deliver that in a fraction of the time, and that saving is passed straight to you. The same software, for a much smaller invoice.</p>
       </div>
 
@@ -362,5 +381,30 @@
   </footer>
 
   <script src="js/main.js"></script>
+  <script>
+    (function () {
+      var KEY = 'axrik_currency';
+      var btnG = document.getElementById('curGbp');
+      var btnE = document.getElementById('curEur');
+      function apply(cur) {
+        document.querySelectorAll('[data-gbp]').forEach(function (el) {
+          el.textContent = cur === 'eur' ? el.dataset.eur : el.dataset.gbp;
+        });
+        btnG.classList.toggle('on', cur !== 'eur');
+        btnE.classList.toggle('on', cur === 'eur');
+        btnG.setAttribute('aria-pressed', cur !== 'eur');
+        btnE.setAttribute('aria-pressed', cur === 'eur');
+      }
+      function set(cur) {
+        try { localStorage.setItem(KEY, cur); } catch (e) {}
+        apply(cur);
+      }
+      btnG.addEventListener('click', function () { set('gbp'); });
+      btnE.addEventListener('click', function () { set('eur'); });
+      var saved = null;
+      try { saved = localStorage.getItem(KEY); } catch (e) {}
+      if (saved === 'eur') apply('eur');
+    })();
+  </script>
 </body>
 </html>

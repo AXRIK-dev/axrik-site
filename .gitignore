@@ -11,3 +11,5 @@ node_modules/
 
 # Local secrets — never commit
 portal-config.js
+Screenshots/
+ui-ux-pro-max-skill-main/
