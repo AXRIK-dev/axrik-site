@@ -49,7 +49,7 @@ exports.handler = async (event) => {
     <p style="font-family:sans-serif; font-size:14px; white-space:pre-wrap; border-left:3px solid #007B5F; padding-left:12px;">${esc(message)}</p>
     <p style="font-family:sans-serif; font-size:12px; color:#999;">Also saved in the enquiries table in Supabase.</p>`;
 
-  try {
+  const send = async (from) => {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -57,17 +57,26 @@ exports.handler = async (event) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: FROM,
+        from,
         to: [NOTIFY_TO],
         reply_to: email,
         subject: `New AXRIK enquiry from ${name}${business ? ' (' + business + ')' : ''}`,
         html
       })
     });
+    return { ok: res.ok, status: res.status, body: await res.text() };
+  };
 
-    const body = await res.text();
-    if (!res.ok) {
-      console.error('Resend error', res.status, body);
+  try {
+    // Try the branded sender first; if axrik.com isn't verified in Resend yet,
+    // fall back to Resend's built-in sender (delivers to the account owner).
+    let result = await send(FROM);
+    if (!result.ok) {
+      console.warn('Branded send failed, falling back to onboarding sender:', result.status, result.body);
+      result = await send('AXRIK Website <onboarding@resend.dev>');
+    }
+    if (!result.ok) {
+      console.error('Resend error', result.status, result.body);
       return { statusCode: 502, body: JSON.stringify({ error: 'Email send failed' }) };
     }
     return { statusCode: 200, body: JSON.stringify({ ok: true }) };
