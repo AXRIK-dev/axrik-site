@@ -69,9 +69,17 @@ document.addEventListener('DOMContentLoaded', () => {
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0, rootMargin: '0px 0px 120px 0px' });
 
-    reveals.forEach(el => observer.observe(el));
+    reveals.forEach(el => {
+      // Anything on (or near) the first screen shows immediately —
+      // the hero must never wait for an animation.
+      if (el.getBoundingClientRect().top < window.innerHeight * 1.1) {
+        el.classList.add('visible');
+      } else {
+        observer.observe(el);
+      }
+    });
   }
 
   // ── Smooth scroll for anchor links ────────────────────────

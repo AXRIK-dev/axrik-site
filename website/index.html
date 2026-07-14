@@ -32,6 +32,14 @@
     .trust-item b { display: block; font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
     .trust-item p { font-size: 14px; color: var(--text-2); line-height: 1.65; }
     @media (max-width: 860px) { .trust-grid { grid-template-columns: 1fr; } }
+
+    .hero-clients { margin-top: 28px; font-size: 14px; color: var(--text-3); }
+    .hero-clients a { color: var(--text-2); font-weight: 600; border-bottom: 1px solid var(--border); transition: color .2s, border-color .2s; }
+    .hero-clients a:hover { color: var(--green); border-color: var(--green); }
+
+    .example-shot { margin-top: 18px; border-radius: 10px; border: 1px solid var(--border); }
+    .example-link { display: inline-block; margin-top: 14px; font-size: 14px; font-weight: 600; color: var(--green); }
+    .example-link:hover { text-decoration: underline; }
   </style>
   <script type="application/ld+json">
   {
@@ -50,6 +58,7 @@
     "sameAs": []
   }
   </script>
+  <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
 
@@ -93,6 +102,9 @@
           <a href="#contact" class="btn btn-primary btn-arrow">Tell us about your business</a>
           <a href="services.html" class="btn btn-outline">See what we build</a>
         </div>
+        <p class="hero-clients reveal reveal-delay-4">
+          Recently built for <a href="jg-foods.html">JG Foods</a> and <a href="driversity.html">Driversity Training</a>
+        </p>
       </div>
     </div>
   </section>
@@ -280,27 +292,43 @@
       <p class="eyebrow reveal" style="margin-bottom:12px;">Recent builds</p>
       <h2 class="headline reveal reveal-delay-1" style="margin-bottom:16px;">Real systems, built for real businesses.</h2>
       <p class="body-md reveal reveal-delay-2" style="max-width:640px; margin-bottom:48px; color:var(--text-2);">
-        A look at some of what we've built recently. Client names are kept private — but here's what each system actually does, and the AI we built into it.
+        A look at some of what we've built recently — what each system actually does, and the AI we built into it.
       </p>
       <div class="examples-grid">
         <div class="example-card reveal">
-          <div class="example-num">Mobile food</div>
+          <div class="example-num">JG Foods · Mobile food</div>
           <h4>An ordering site plus a business app</h4>
           <p>A customer ordering website tied to weekly availability, plus a back-office app that runs orders, customers and the delivery run — with picking lists generated automatically. <strong>AI parses messy orders pasted from social messages</strong> and writes the weekly social posts from live stock.</p>
+          <img class="example-shot" src="assets/case-studies/jg-admin-orders.webp" alt="JG Foods back-office dashboard" loading="lazy">
+          <a class="example-link" href="jg-foods.html">Read the case study →</a>
         </div>
         <div class="example-card reveal reveal-delay-1">
-          <div class="example-num">Training provider</div>
+          <div class="example-num">Driversity · Training provider</div>
           <h4>A staff &amp; training management hub</h4>
           <p>A central system managing trainees, qualified staff, their sessions and standards checks across multiple programmes — each trainer signing in to only their own records. It also includes a built-in social studio: <strong>AI drafts posts and images in the brand's own voice</strong>, tailored for each platform and ready to copy straight in.</p>
+          <img class="example-shot" src="assets/case-studies/driversity-dashboard.webp" alt="Driversity training hub dashboard" loading="lazy">
+          <a class="example-link" href="driversity.html">Read the case study →</a>
         </div>
         <div class="example-card reveal reveal-delay-2">
-          <div class="example-num">Fleet safety</div>
+          <div class="example-num">Driversity · Fleet safety</div>
           <h4>An on-road driver assessment portal</h4>
           <p>Fully customisable assessment forms the team edits themselves, an approve-or-return review workflow, and auto-generated PDF reports sent to employers — set to delete after five years for compliance. A behind-the-scenes <strong>AI agent finds local prospects and drafts personalised outreach emails</strong> for review.</p>
+          <a class="example-link" href="work.html">See the build →</a>
         </div>
       </div>
       <div style="margin-top:40px;" class="reveal reveal-delay-2">
         <a href="work.html" class="btn btn-outline btn-arrow">See how each build differs</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MID-PAGE CTA ───────────────────────────────────── -->
+  <section class="section-sm" style="border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div class="container" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:20px;">
+      <p class="reveal" style="font-family:'Syne',sans-serif; font-size:clamp(18px,2.2vw,24px); font-weight:700; color:var(--text);">Could your business run like this?</p>
+      <div class="reveal reveal-delay-1" style="display:flex; gap:14px; flex-wrap:wrap;">
+        <a href="pricing.html" class="btn btn-outline">See pricing</a>
+        <a href="#contact" class="btn btn-primary btn-arrow">Tell us about your business</a>
       </div>
     </div>
   </section>
