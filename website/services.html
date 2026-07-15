@@ -24,6 +24,18 @@
   <meta name="twitter:title" content="What We Do — AXRIK">
   <meta name="twitter:description" content="Custom websites, business management apps, AI integration, and automated workflows — all built specifically for small and medium-sized businesses.">
   <script>document.documentElement.classList.add("js");</script>
+  <style>
+    .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .app-card {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+      padding: 24px 26px; border-top: 2px solid var(--green);
+    }
+    .app-card b { display: block; font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .app-card p { font-size: 14px; color: var(--text-2); line-height: 1.65; }
+    .sec-head h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 700; }
+    @media (max-width: 1000px) { .app-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px) { .app-grid { grid-template-columns: 1fr; } }
+  </style>
 </head>
 <body>
 
@@ -81,6 +93,13 @@
         </div>
         <div class="service-item reveal reveal-delay-2">
           <div>
+            <h3>Your own app — no app store</h3>
+            <p>Every AXRIK build installs on phones and tablets like a real app: its own icon on the home screen, opening full-screen with no browser bar. That goes for your customer website <em style="font-style:normal; color:var(--text);">and</em> your business management app — and every update we deploy appears instantly, with no app store, no downloads and no update prompts.</p>
+          </div>
+          <div class="service-arrow">→</div>
+        </div>
+        <div class="service-item reveal reveal-delay-2">
+          <div>
             <h3>AI integration &amp; automation</h3>
             <p>Practical AI built into your system from day one. Not a chatbot on your homepage — AI that does real work: drafting communications, generating reports, forecasting demand, parsing orders from social media, flagging problems before they become one. Designed around your specific workflows.</p>
           </div>
@@ -100,6 +119,23 @@
           </div>
           <div class="service-arrow">→</div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── APP ON EVERY DEVICE ────────────────────────────── -->
+  <section class="section" style="background:var(--bg-1); padding-top:80px; padding-bottom:80px;">
+    <div class="container">
+      <div class="sec-head reveal" style="margin-bottom:36px;">
+        <p class="eyebrow">Apps without the app store</p>
+        <h2 class="headline">Your business, <em>as an app on every device.</em></h2>
+        <p style="font-size:15.5px; color:var(--text-2); margin-top:12px; max-width:640px;">Custom apps used to mean app-store development money. Not any more. Every system AXRIK builds — the website your customers use and the management app that runs your business — installs on any phone, tablet or computer like a real app.</p>
+      </div>
+      <div class="app-grid reveal reveal-delay-1">
+        <div class="app-card"><b>Own icon, full screen</b><p>Tap the icon on your home screen and your system opens like any other app — no browser bar, no typing addresses. Your staff open "your app", not "a website".</p></div>
+        <div class="app-card"><b>Phones, tablets &amp; desktops</b><p>Android, iPhone, iPad, laptop — the same system installs everywhere your team works, from the delivery van to the office.</p></div>
+        <div class="app-card"><b>Updates instantly, forever</b><p>There's no app store in the middle. The moment we improve your system, every installed app is already up to date — nothing to download, nothing to approve.</p></div>
+        <div class="app-card"><b>Included in every build</b><p>This isn't an add-on with a price tag. Every AXRIK website and business management app ships install-ready as standard.</p></div>
       </div>
     </div>
   </section>
