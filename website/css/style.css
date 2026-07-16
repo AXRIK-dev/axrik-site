@@ -891,3 +891,54 @@ html.js .reveal-delay-4 { transition-delay: 0.24s; }
   }
   html { scroll-behavior: auto; }
 }
+
+/* ── Installed-app proof (real phone screenshots) ─────────── */
+.proof-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:22px;
+}
+.proof-card{
+  background:var(--bg-2);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+}
+.proof-shot{
+  border-radius:12px;
+  overflow:hidden;
+  background:#000;
+  aspect-ratio:3 / 2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--border);
+}
+.proof-shot img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+.proof-cap{ margin-top:16px; }
+.proof-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  color:var(--green);
+  font-size:11.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.09em;
+  margin-bottom:8px;
+}
+.proof-badge::before{
+  content:"";
+  width:7px; height:7px; border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 0 4px var(--green-dim);
+}
+.proof-cap b{ color:var(--text); font-size:15.5px; display:block; }
+.proof-cap span{ color:var(--text-3); font-size:13.5px; line-height:1.5; display:block; margin-top:5px; }
