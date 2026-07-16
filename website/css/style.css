@@ -942,3 +942,27 @@ html.js .reveal-delay-4 { transition-delay: 0.24s; }
 }
 .proof-cap b{ color:var(--text); font-size:15.5px; display:block; }
 .proof-cap span{ color:var(--text-3); font-size:13.5px; line-height:1.5; display:block; margin-top:5px; }
+
+/* ── Cost comparison callout ──────────────────────────────── */
+.cost-compare{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:16px;
+  margin-top:4px;
+}
+.cost-item{
+  background:var(--bg-2);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px 22px;
+}
+.cost-item.is-axrik{ border-color:var(--green); background:var(--green-dim); }
+.cost-label{
+  font-size:12px; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--text-3); margin:0 0 8px;
+}
+.cost-figure{
+  font-size:25px; font-weight:800; color:var(--text); letter-spacing:-.02em; line-height:1.1;
+}
+.cost-item.is-axrik .cost-figure{ color:var(--green); }
+.cost-note{ font-size:13px; color:var(--text-3); margin:8px 0 0; line-height:1.5; }
