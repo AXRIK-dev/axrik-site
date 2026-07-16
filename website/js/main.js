@@ -181,3 +181,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+
+/* ── PWA: register the service worker ─────────────────────────
+   Required for the real "Install app" experience on Chrome
+   (Android + desktop). Without this the site can only be saved
+   as a plain browser bookmark, not installed as an app.        */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((err) => {
+      console.warn('Service worker registration failed:', err);
+    });
+  });
+}
