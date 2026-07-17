@@ -666,6 +666,16 @@ h1, h2, h3, h4 {
 }
 .footer-bottom a { color: var(--green); }
 
+.footer-social { display: flex; gap: 12px; margin-top: 18px; }
+.footer-social a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: 9px;
+  border: 1px solid var(--border); color: var(--text-2);
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.footer-social a:hover { color: var(--green); border-color: var(--green-dark); background: var(--green-dim); }
+.footer-social svg { width: 18px; height: 18px; }
+
 /* ── Reveal animations ─────────────────────────────────────── */
 /* Reveal is opt-in: content is visible by default and only hidden
    once JS confirms it's running (html.js), so nothing can get stuck invisible. */
