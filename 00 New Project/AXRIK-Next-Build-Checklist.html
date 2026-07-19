@@ -102,6 +102,7 @@
       <li><b>Land the whole spine in 3 consolidated SQL files</b>, not incremental migrations. <span class="why">Cause #3: 16 migrations grew one at a time.</span></li>
       <li><b>Put config in an <code>app_settings</code> key/value table</b>, never constants — delivery days, cut-offs, copy. <span class="why">Cause #4: every tweak was a code change.</span></li>
       <li><b>Run the end-of-session hygiene sweep every time.</b> <span class="why">Cause #5: stale placeholders shipped to the client.</span></li>
+      <li><b>Run the PWA kit before go-live</b> — make every build installable as a real app (home-screen icon, full-screen, no browser bar) on iOS, Android and desktop. See <code>AXRIK-PWA-Kit-Prompt.docx</code>. <span class="why">Now promised on the website. Needs a service worker — the old no-service-worker kit failed to install on Android.</span></li>
     </ul>
 
     <h2><span class="num">D</span> The prompts that drive it</h2>
@@ -112,6 +113,7 @@
     <div class="prompt"><span class="lbl">5 · AI feature (phase 3)</span>Add an AI [order-parse / message-redraft / social-post / summary] feature to [client], following the AI-features pattern. Route through the existing /.netlify/functions/ai proxy, build a non-AI fallback so the button always works without a key. AI drafts, client confirms before send/save.</div>
     <div class="prompt"><span class="lbl">6 · Build summary (end of session)</span>Update build summary: [what was done this session]. (Replaces in place AND posts to the AXRIK portal via portal-update — same filenames, never numbered versions.)</div>
     <div class="prompt"><span class="lbl">7 · Go-live & handover (launch)</span>[Client] is ready for go-live. Following the deliverables pattern, produce the go-live checklist, a client-runnable testing worksheet, and refresh the build summary. AXRIK black/white/green branding, first person as me, UK English.</div>
+    <div class="prompt"><span class="lbl">7b · Make it installable (before go-live)</span>Add the AXRIK PWA kit to [client] so it installs as a real app on iOS, Android and desktop: manifest, maskable icons from the logo, iOS head tags, and a root-level service worker with a NETWORK-FIRST fetch handler (live site always, offline fallback only) registered on every page. Do the customer site and admin app as two separate apps. Verify the manifest and service worker in DevTools → Application, then deploy. Full spec: AXRIK-PWA-Kit-Prompt.docx.</div>
     <div class="prompt"><span class="lbl">8 · Client update email (any time)</span>Draft a short update email to [client] about [what's new]. First person as me, warm, UK English, lead with the outcome, flag anything I need from them, end with what's next. No jargon.</div>
     <div class="prompt"><span class="lbl">9 · Hygiene sweep (every session)</span>Before we finish: scan for leftover placeholders or stale integration notes, confirm every table has RLS, confirm every AI feature has a fallback, and list anything still stubbed so it doesn't surprise me next session.</div>
 
