@@ -45,6 +45,20 @@
     .example-shot { margin-top: 18px; border-radius: 10px; border: 1px solid var(--border); }
     .example-link { display: inline-block; margin-top: 14px; font-size: 14px; font-weight: 600; color: var(--green); }
     .example-link:hover { text-decoration: underline; }
+
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 44px; }
+    .compare-col { border: 1px solid var(--border); border-radius: 14px; padding: 28px 30px; background: var(--bg); }
+    .compare-col.owned { border-top: 2px solid var(--green); }
+    .compare-col .compare-tag { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); }
+    .compare-col.owned .compare-tag { color: var(--green); }
+    .compare-col h3 { font-family: 'Syne', sans-serif; font-size: 19px; font-weight: 700; color: var(--text); margin: 8px 0 18px; }
+    .compare-col ul { list-style: none; padding: 0; margin: 0; }
+    .compare-col li { font-size: 14.5px; color: var(--text-2); line-height: 1.6; padding: 10px 0 10px 22px; position: relative; border-top: 1px solid var(--border); }
+    .compare-col li:first-child { border-top: none; }
+    .compare-col li::before { content: ''; position: absolute; left: 0; top: 17px; width: 8px; height: 8px; border-radius: 50%; }
+    .compare-col.rented li::before { background: var(--text-3); }
+    .compare-col.owned li::before { background: var(--green); }
+    @media (max-width: 860px) { .compare-grid { grid-template-columns: 1fr; } }
   </style>
   <script type="application/ld+json">
   {
@@ -150,6 +164,42 @@
           <p class="body-md">Off-the-shelf tools are built for everyone — which means they're a perfect fit for no one. You adapt your workflow to the software. You pay for features you'll never use. You still end up doing half the job manually.</p>
           <p class="body-md" style="margin-top:16px;">The gaps are filled with spreadsheets, WhatsApp messages and workarounds that pile up over time. It works — until it doesn't.</p>
           <p class="body-md" style="margin-top:16px;">AXRIK builds the opposite: a system shaped around exactly how your business runs, with nothing wasted and nothing missing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RENTED VS OWNED ────────────────────────────────── -->
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="sec-head reveal" style="max-width:680px;">
+        <p class="eyebrow">Rented vs owned</p>
+        <h2 class="headline">Most business software is rented.<br><em>Yours should be owned.</em></h2>
+        <p style="font-size:15.5px; color:var(--text-2); margin-top:14px;">The tools most businesses run on — booking systems, CRMs, the monthly subscriptions that hold your customer list — are rented. You pay every month, you shape your business around how they work, and if you ever stop paying, your data stays with them.</p>
+        <p style="font-size:15.5px; color:var(--text-2); margin-top:14px;">AXRIK builds the opposite: a system shaped around how you actually run, that you own outright. Often the two aren't even rivals — a rented tool and the system we build can sit happily as different layers. And if off-the-shelf software already does everything you need, we'll be the first to say so. We're here for the businesses it doesn't quite fit.</p>
+      </div>
+      <div class="compare-grid reveal reveal-delay-1">
+        <div class="compare-col rented">
+          <span class="compare-tag">Rented software</span>
+          <h3>Built for everyone. Shaped like no one.</h3>
+          <ul>
+            <li>You fit your business around it</li>
+            <li>Your customer list lives on their platform</li>
+            <li>You pay for features you'll never use</li>
+            <li>The bill climbs as you grow</li>
+            <li>Stop paying and you're left with nothing</li>
+          </ul>
+        </div>
+        <div class="compare-col owned">
+          <span class="compare-tag">A system you own</span>
+          <h3>Built around exactly how you work.</h3>
+          <ul>
+            <li>It fits you — not the other way round</li>
+            <li>Your data is yours, and stays yours</li>
+            <li>Nothing wasted, nothing missing</li>
+            <li>A flat, predictable cost as you scale</li>
+            <li>Walk away any time and take it all with you</li>
+          </ul>
         </div>
       </div>
     </div>
