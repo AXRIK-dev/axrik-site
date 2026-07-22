@@ -39,6 +39,19 @@
       </button>
     </form>
 
+    <div style="text-align:center; margin-top:14px">
+      <a href="#" id="forgotLink" style="font-size:13px; color:var(--green); text-decoration:none">Forgot password?</a>
+    </div>
+
+    <form id="resetForm" style="display:none; margin-top:14px">
+      <div class="form-group">
+        <label class="form-label" for="resetEmail">Your email address</label>
+        <input class="form-input" type="email" id="resetEmail" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <button type="submit" class="btn btn--primary" style="width:100%" id="resetBtn">Send reset link</button>
+    </form>
+    <div id="resetMsg" style="display:none; text-align:center; font-size:13px; margin-top:12px"></div>
+
     <div class="login-divider">New here? You'll receive an invite email from AXRIK to set up your account.</div>
 
     <p style="text-align:center; font-size:12px; color:var(--text-3)">
@@ -86,6 +99,38 @@
     } finally {
       loginBtn.disabled = false;
       loginBtn.textContent = 'Sign in';
+    }
+  });
+
+  // ── Forgot password ──
+  const forgotLink = document.getElementById('forgotLink');
+  const resetForm  = document.getElementById('resetForm');
+  const resetMsg   = document.getElementById('resetMsg');
+  forgotLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    const show = resetForm.style.display === 'none';
+    resetForm.style.display = show ? 'block' : 'none';
+    if (show) document.getElementById('resetEmail').value = document.getElementById('email').value.trim();
+  });
+  resetForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('resetBtn');
+    const email = document.getElementById('resetEmail').value.trim();
+    if (!email) return;
+    btn.disabled = true; btn.textContent = 'Sending…';
+    resetMsg.style.display = 'none';
+    try {
+      await requestPasswordReset(email);
+      resetForm.style.display = 'none';
+      resetMsg.textContent = 'Check your email for a link to reset your password.';
+      resetMsg.style.color = 'var(--green)';
+      resetMsg.style.display = 'block';
+    } catch (err) {
+      resetMsg.textContent = err.message || 'Could not send reset email.';
+      resetMsg.style.color = '#c0392b';
+      resetMsg.style.display = 'block';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Send reset link';
     }
   });
 </script>

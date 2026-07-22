@@ -508,10 +508,17 @@ async function deleteApproval(id) {
 async function renderFiles(el) {
   const { data: docs } = await db.from('documents').select('*').eq('project_id', openProject.id).order('created_at', { ascending: false });
 
-  if (!docs?.length) { el.innerHTML = `<div class="empty-state">No files uploaded by client yet.</div>`; return; }
+  const uploadBar = `
+    <div style="margin-bottom:14px">
+      <input type="file" id="adminDocInput" style="display:none" onchange="adminUploadDoc(this)">
+      <button class="btn btn--primary btn--sm" onclick="document.getElementById('adminDocInput').click()">Upload a file for the client</button>
+      <span id="adminUploadStatus" style="font-size:12px;color:var(--text-3);margin-left:10px"></span>
+    </div>`;
 
-  el.innerHTML = `
-    <div style="font-size:12px;color:var(--text-3);margin-bottom:12px">${docs.length} file${docs.length !== 1 ? 's' : ''} uploaded</div>
+  if (!docs?.length) { el.innerHTML = uploadBar + `<div class="empty-state">No files yet. Anything you upload here appears in the client's portal.</div>`; return; }
+
+  el.innerHTML = uploadBar + `
+    <div style="font-size:12px;color:var(--text-3);margin-bottom:12px">${docs.length} file${docs.length !== 1 ? 's' : ''}</div>
     <div class="doc-list">
       ${docs.map(d => `
         <div class="doc-item">
@@ -530,6 +537,26 @@ async function renderFiles(el) {
 async function adminDownload(path, name) {
   const { data } = await db.storage.from('portal-documents').createSignedUrl(path, 60);
   if (data) { const a = document.createElement('a'); a.href = data.signedUrl; a.download = name; a.click(); }
+}
+
+async function adminUploadDoc(input) {
+  const file = input.files[0]; if (!file) return;
+  const status = document.getElementById('adminUploadStatus');
+  if (status) status.textContent = `Uploading ${file.name}…`;
+  const filePath = `${openProject.id}/${currentUser.id}/${Date.now()}_${file.name}`;
+  try {
+    const { error: storageErr } = await db.storage.from('portal-documents')
+      .upload(filePath, file, { cacheControl: '3600', upsert: false });
+    if (storageErr) throw storageErr;
+    await db.from('documents').insert({
+      project_id: openProject.id, uploaded_by: currentUser.id,
+      file_name: file.name, file_path: filePath, file_type: file.type, file_size: file.size, label: 'From AXRIK',
+    });
+    showToast(`${file.name} uploaded — the client can now see it.`, 'success');
+    renderPmTab('files');
+  } catch (err) {
+    showToast(err.message || 'Upload failed', 'error');
+  } finally { input.value = ''; }
 }
 
 // ── Messages ──────────────────────────────────────────────────
@@ -736,24 +763,39 @@ document.getElementById('newProjectForm').addEventListener('submit', async (e) =
   btn.disabled = true; btn.textContent = 'Creating…';
 
   const email = document.getElementById('np_email').value.trim();
-  const { data: userId, error: userErr } = await db.rpc('get_user_id_by_email', { email_address: email });
+  const projName = document.getElementById('np_name').value.trim();
+  const { data: userId } = await db.rpc('get_user_id_by_email', { email_address: email });
 
-  if (userErr || !userId) {
-    showToast('No account found for that email. Invite them via Supabase first.', 'error');
-    btn.disabled = false; btn.textContent = 'Create project';
-    return;
+  let clientId = userId;
+  let invited = false;
+  if (!clientId) {
+    // No account yet — auto-create the client's account AND email their login invite.
+    btn.textContent = 'Creating client account…';
+    const { data: invite, error: inviteErr } = await db.functions
+      .invoke('invite-client', { body: {
+        email, full_name: projName, send_invite: true,
+        redirect_to: `${window.location.origin}/portal/reset.html`,
+      } });
+    if (inviteErr || !invite?.user_id) {
+      showToast(invite?.error || inviteErr?.message ||
+        'Could not create the client account. Invite them via Supabase, then retry.', 'error');
+      btn.disabled = false; btn.textContent = 'Create project';
+      return;
+    }
+    clientId = invite.user_id;
+    invited  = !!invite.invited;
   }
 
   const { error } = await db.from('projects').insert({
-    client_id:   userId,
-    name:        document.getElementById('np_name').value.trim(),
+    client_id:   clientId,
+    name:        projName,
     description: document.getElementById('np_desc').value.trim() || null,
     stage:       document.getElementById('np_stage').value,
     notes:       document.getElementById('np_notes').value.trim() || null,
   });
 
   if (error) { showToast(error.message, 'error'); }
-  else { showToast('Project created!', 'success'); closeModal('newProjectModal'); document.getElementById('newProjectForm').reset(); await loadProjects(); }
+  else { showToast(invited ? 'Project created — client emailed a login invite.' : 'Project created!', 'success'); closeModal('newProjectModal'); document.getElementById('newProjectForm').reset(); await loadProjects(); }
 
   btn.disabled = false; btn.textContent = 'Create project';
 });

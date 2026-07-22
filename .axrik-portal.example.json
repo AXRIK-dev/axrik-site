@@ -1,0 +1,4 @@
+{
+  "_comment": "Copy this to .axrik-portal.json in a client's Claude/Claude Code build workspace so every `node portal-update.js \"...\"` from that project posts to the right portal project. Use EITHER project (name) OR project_id (uuid).",
+  "project": "Evans Commercial Finance"
+}

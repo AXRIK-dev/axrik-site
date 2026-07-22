@@ -179,6 +179,22 @@ async function signOut() {
   window.location.href = '/portal/login.html';
 }
 
+// ── Password reset ───────────────────────────────────────────
+// Sends the client a "reset your password" email with a link back
+// to reset.html, where they choose a new password.
+async function requestPasswordReset(email) {
+  const { error } = await db.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/portal/reset.html`,
+  });
+  if (error) throw error;
+}
+
+// Called on reset.html once the recovery link has established a session.
+async function setNewPassword(password) {
+  const { error } = await db.auth.updateUser({ password });
+  if (error) throw error;
+}
+
 async function getUserProfile(userId) {
   const { data, error } = await db
     .from('user_profiles')

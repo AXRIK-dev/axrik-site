@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Set a new password — AXRIK</title>
+  <link rel="stylesheet" href="portal.css">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0a0a0a">
+</head>
+<body>
+
+<div class="login-page">
+  <div class="login-box">
+
+    <div class="login-logo">
+      <img src="../assets/axrik-logo-transparent.png" alt="AXRIK">
+      <h2>Set a new password</h2>
+      <p>Choose a new password for your AXRIK portal.</p>
+    </div>
+
+    <div class="login-error" id="resetError"></div>
+
+    <form id="newPassForm">
+      <div class="form-group">
+        <label class="form-label" for="password">New password</label>
+        <input class="form-input" type="password" id="password" placeholder="At least 8 characters" required autocomplete="new-password" minlength="8">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="password2">Confirm new password</label>
+        <input class="form-input" type="password" id="password2" placeholder="Re-enter password" required autocomplete="new-password" minlength="8">
+      </div>
+      <button type="submit" class="btn btn--primary btn--lg" style="width:100%" id="saveBtn">
+        Save password
+      </button>
+    </form>
+
+    <div id="resetWaiting" style="display:none; text-align:center; font-size:13px; color:var(--text-3); margin-top:8px">
+      Checking your reset link…
+    </div>
+
+    <p style="text-align:center; font-size:12px; color:var(--text-3); margin-top:16px">
+      Questions? Email <a href="mailto:phil@axrik.com" style="color:var(--green)">phil@axrik.com</a>
+    </p>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase.js"></script>
+<script src="auth.js"></script>
+<script>
+  const form     = document.getElementById('newPassForm');
+  const errorBox = document.getElementById('resetError');
+  const saveBtn  = document.getElementById('saveBtn');
+  const waiting  = document.getElementById('resetWaiting');
+
+  // The recovery link puts a token in the URL; supabase-js establishes a
+  // temporary session so updateUser() can set the new password.
+  let recoveryReady = false;
+  db.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY' || session) recoveryReady = true;
+  });
+
+  function showError(msg) {
+    errorBox.textContent = msg;
+    errorBox.style.display = 'block';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.style.display = 'none';
+    const pw  = document.getElementById('password').value;
+    const pw2 = document.getElementById('password2').value;
+    if (pw !== pw2) { showError('The two passwords do not match.'); return; }
+    if (pw.length < 8) { showError('Password must be at least 8 characters.'); return; }
+
+    saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
+    try {
+      // Make sure the recovery session is loaded from the URL.
+      if (!recoveryReady) {
+        const { data } = await db.auth.getSession();
+        if (!data.session) throw new Error('This reset link has expired. Request a new one from the login page.');
+      }
+      await setNewPassword(pw);
+      window.location.href = 'dashboard.html';
+    } catch (err) {
+      showError(err.message || 'Could not set the password.');
+      saveBtn.disabled = false; saveBtn.textContent = 'Save password';
+    }
+  });
+</script>
+
+</body>
+</html>
